@@ -1,6 +1,6 @@
 <?php
 session_start(); 
-$userid = $_POST["user_name"];
+$clinic_id = $_POST["clinic_id"];
 $passwd = $_POST["password"];
 
 // エラーメッセージを格納する変数を初期化
@@ -9,7 +9,7 @@ $error_message = "";
 // ログインボタンが押されたかを判定
 // 初めてのアクセスでは認証は行わずエラーメッセージは表示しないように
 if (isset($_POST["login"])) {
-  //if ($userid != "" && $passwd != ""){
+  //if ($clinic_id != "" && $passwd != ""){
     //SQLサーバーへ接続
     //$link = mysql_connect('localhost', 'root', 'admin');
     $link = mysql_connect('localhost', 'db_user', '123456');
@@ -20,7 +20,7 @@ if (isset($_POST["login"])) {
 
     // MySQLに対する処理
     //// テーブルへ接続
-    $db_selected = mysql_select_db('user_db', $link);
+    $db_selected = mysql_select_db('immunization', $link);
     if (!$db_selected){
       die('データベース選択失敗です。'.mysql_error());
     }
@@ -30,9 +30,10 @@ if (isset($_POST["login"])) {
     mysql_set_charset('utf8');
 
     //// クエリーの実行
-    //$str = "SELECT * FROM user WHERE userid = '$userid' AND passwd = '$passwd'";
+    $str = "SELECT * FROM clinic WHERE clinic_id = " . $clinic_id . " AND passwd = '". $passwd . "'";
+ 
     //print $str."<P>";
-    $result = mysql_query("SELECT * FROM user WHERE userid = '$userid' AND passwd = '$passwd'");
+    $result = mysql_query($str);
     if (!$result) {
        die('クエリーが失敗しました。'.mysql_error());
     } else {
@@ -43,13 +44,13 @@ if (isset($_POST["login"])) {
       if($num_rows == 1){
 	while ($row = mysql_fetch_assoc($result)) {
 	  print('<p>');
-	  print('userid='.$row['userid']);
+	  print('clinic_id='.$row['clinic_id']);
 	  print(',password='.$row['passwd']);
 	  print('</p>');
 	}
 	
 	// ログインが成功した証をセッションに保存
-	$_SESSION["user_name"] = $_POST["user_name"];
+	$_SESSION["clinic_id"] = $_POST["clinic_id"];
 
 	// 管理者専用画面へリダイレクト
 	$login_url = "http://{$_SERVER["HTTP_HOST"]}/immunization/anq_result.php";
@@ -86,7 +87,7 @@ if ($error_db) {
 ?>
 
 <form action="login.php" method="POST">
-ユーザ名：<input type="text" name="user_name" value="" /><br />
+病院ID：<input type="text" name="clinic_id" value="" /><br />
 パスワード：<input type="password" name="password" value="" /><br />
 <input type="submit" name="login" value="ログイン" />
 </form>
