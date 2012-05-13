@@ -1,32 +1,46 @@
 <html>
 <head>
-<title>Registration View</title>
+<title>Patient Registration</title>
 </head>
 <body>
 
 <?php
 require_once 'HTML/Table.php';
 
-$clinic_attribute = array("clinic_id", "passwd", "name", "yomi", "zipcode" ,"location1", "location2", "tel", "email");
-$clinic_caption = array("病院ID", "パスワード", "病院名", "病院名（読み）",
-			"郵便番号", "住所１", "住所２", "電話番号", 
-			"メールアドレス");
-$clinic_vars_min = array(1, 8, 1, 1, 8, 1, 1, 12, 1);
-$clinic_vars_max = array(10, 20, 50, 100, 8, 255, 255, 13, 50);
+session_start(); 
+// ログイン済みかどうかの変数チェックを行う
+if (!isset($_SESSION["clinic_id"])) {
 
-$clinic_vars = array();
+  // 変数に値がセットされていない場合は不正な処理と判断し、ログイン画面へリダイレクトさせる
+  $no_login_url = "http://{$_SERVER["HTTP_HOST"]}/immunization/login.php";
+  header("Location: {$no_login_url}");
+  exit;
+}
+
+$patient_attribute = array("person_id", "clinic_id", "patient_id", 
+			  "family_name", "family_name_yomi", "personal_name", 
+			  "personal_name_yomi", "birthday", "zipcode",
+			   "location1", "location2", "tel", "email");
+$patient_caption = array("人ID","病院ID", "患者ID", "氏", "氏（読み）","名", 
+			"名（読み）", "生年月日", "郵便番号", "住所１", "住所２",
+			"電話番号", "メールアドレス");
+$patient_vars_min = array(1, 1, 1, 1, 1, 1, 1, 10, 8, 1, 1, 12 ,1);
+$patient_vars_max = array(10, 10, 20, 10, 20, 10, 20, 10, 8, 255, 255, 13, 50);
+
+$patient_vars = array();
 $table_error = array();
 $verify = false;
-session_start(); 
 
-for ($cnt = 0; $cnt < count($clinic_attribute); $cnt++) {
+
+for ($cnt = 0; $cnt < count($patient_attribute); $cnt++) {
   $table_error[] = false;
-  //$clinic_vars[$cnt] = "null";
-  if(isset($_POST[$clinic_attribute[$cnt]])){
-    $clinic_vars[$cnt] = $_POST[$clinic_attribute[$cnt]];
+  //$patient_vars[$cnt] = "null";
+  if(isset($_POST[$patient_attribute[$cnt]])){
+    $patient_vars[$cnt] = $_POST[$patient_attribute[$cnt]];
   }
 }
-//print_r($clinic_vars);
+//print_r($patient_vars);
+$patient_vars[1] = $_SESSION["clinic_id"];
 
 $cmd = "";
 if (isset($_POST["cmd"])) {
@@ -44,8 +58,8 @@ if ($_POST["verify"]) {
 }
 if ($_POST["reset"]) {
   echo "reset"."<P>";
-  for ($cnt = 0; $cnt < count($clinic_vars); $cnt++) {
-    $clinic_vars[$cnt] = null;
+  for ($cnt = 0; $cnt < count($patient_vars); $cnt++) {
+    $patient_vars[$cnt] = null;
   }
 }
 //var_dump($_POST);
@@ -54,7 +68,7 @@ $error_message = "";
 
 // ログインボタンが押されたかを判定
 // 初めてのアクセスでは認証は行わずエラーメッセージは表示しないように
-//if ($clinic_vars[0] != "null") {
+//if ($patient_vars[0] != "null") {
 if ($_POST["submit"] ||$_POST["verify"] ) {
     //SQLサーバーへ接続
     //$link = mysql_connect('localhost', 'root', 'admin');
@@ -78,7 +92,7 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
     //// 新規ユーザーの追加
     if($cmd == "add"){
       if ($_POST["verify"]) {
-	$table_error = checkInput($clinic_vars, $clinic_vars_min, $clinic_vars_max, $table_error);
+	$table_error = checkInput($patient_vars, $patient_vars_min, $patient_vars_max, $table_error);
 	$verify = true;
 	for ($cnt = 0; $cnt < count($table_error); $cnt++) {
 	  if($table_error[$cnt] == "over_flow" || $table_error[$cnt] == "under_flow"){
@@ -93,17 +107,17 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
       }
       if ($_POST["submit"]) {
 	$verify = true;
-	$str = "INSERT INTO clinic VALUES (null, '";
-	$last_item = count($clinic_attribute) -1;
-	for ($cnt = 1; $cnt < count($clinic_attribute); $cnt++) {
+	$str = "INSERT INTO person VALUES (null, '";
+	$last_item = count($patient_attribute) -1;
+	for ($cnt = 1; $cnt < count($patient_attribute); $cnt++) {
 	  if($cnt == $last_item){
-	    $str .= $clinic_vars[$cnt] . "');";
+	    $str .= $patient_vars[$cnt] . "');";
 	  } else {
-	    $str .= $clinic_vars[$cnt] . "','";
+	    $str .= $patient_vars[$cnt] . "','";
 	  } 
 	}
-	//$str = "INSERT INTO clinic VALUES (null, '" . $passwd . "','" . $name . "','" . $yomi . "','" . $email . "','" . $zipcode . "','" . $location1 . "','" . $location2 . "','" . $tel . "');";
-	//print $str."<P>";
+	//$str = "INSERT INTO person VALUES (null, '" . $passwd . "','" . $name . "','" . $yomi . "','" . $email . "','" . $zipcode . "','" . $location1 . "','" . $location2 . "','" . $tel . "');";
+	print $str."<P>";
 	$result = mysql_query($str);
 	if (!$result) {
 	  print "クエリーが失敗しました。".mysql_error()."<P>";
@@ -116,10 +130,10 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
     } else if($cmd == "update"){ // 既存ユーザーのデータ更新
       if ($_POST["verify"]) {
 	
-	if(userIdVerify($clinic_vars[0])){
-	  if(passwordVerify($clinic_vars[0], $clinic_vars[1])){
+	if(userIdVerify($patient_vars[0])){
+	  if(passwordVerify($patient_vars[0], $patient_vars[1])){
 	    
-	    $table_error = checkInput($clinic_vars, $clinic_vars_min, $clinic_vars_max, $table_error);
+	    $table_error = checkInput($patient_vars, $patient_vars_min, $patient_vars_max, $table_error);
 	    $verify = true;
 	    for ($cnt = 0; $cnt < count($table_error); $cnt++) {
 	      if($table_error[$cnt] == "over_flow" || $table_error[$cnt] == "under_flow"){
@@ -144,17 +158,17 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
       } 
       if ($_POST["submit"]) {
 	$verify = true;
-	$str = "UPDATE clinic SET ";
-	$last_item = count($clinic_attribute) -1;
-	for ($cnt = 1; $cnt < count($clinic_attribute); $cnt++) {
+	$str = "UPDATE person SET ";
+	$last_item = count($patient_attribute) -1;
+	for ($cnt = 1; $cnt < count($patient_attribute); $cnt++) {
 	  if($cnt == $last_item){
-	    $str .= $clinic_attribute[$cnt] . "='" . $clinic_vars[$cnt] . "'";
+	    $str .= $patient_attribute[$cnt] . "='" . $patient_vars[$cnt] . "'";
 	  } else {
-	    $str .= $clinic_attribute[$cnt] . "='" . $clinic_vars[$cnt] . "', ";
+	    $str .= $patient_attribute[$cnt] . "='" . $patient_vars[$cnt] . "', ";
 	  } 
 	}
-	$str .= " WHERE " . $clinic_attribute[0] . "=" . $clinic_vars[0] . ";";
-	//$str = "UPDATE clinic SET passwd='" . $passwd . "', name='" . $name . "', yomi='" . $yomi . "', email='" . $email . "', zipcode='" . $zipcode . "', location1='" . $location1 . "', location2='" . $location2 . "', tel='" . $tel . "' WHERE clinic_id=" . $clinic_id . ";";
+	$str .= " WHERE " . $patient_attribute[0] . "=" . $patient_vars[0] . ";";
+	//$str = "UPDATE person SET passwd='" . $passwd . "', name='" . $name . "', yomi='" . $yomi . "', email='" . $email . "', zipcode='" . $zipcode . "', location1='" . $location1 . "', location2='" . $location2 . "', tel='" . $tel . "' WHERE patient_id=" . $patient_id . ";";
 	print $str."<P>";
 	$result = mysql_query($str);
 	if (!$result) {
@@ -166,8 +180,8 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
       }  
     } else if($cmd == "delete"){ // ユーザーデータの削除
       if ($_POST["verify"]) {
-	if(userIdVerify($clinic_vars[0])){
-	  if(passwordVerify($clinic_vars[0], $clinic_vars[1])){
+	if(userIdVerify($patient_vars[0])){
+	  if(passwordVerify($patient_vars[0], $patient_vars[1])){
 	    $verify = true;
 	  } else {
 	    //print "<font color=\"red\">ERROR: パスワードが一致しません。</font>";
@@ -180,15 +194,15 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
 	//print_r($table_error);
 	if($verify == true){
 	  print "以下のデータを削除します。本当に削除しても良いか今一度確認してください。";
-	  $clinic_vars = getClinicData($clinic_vars[0], $clinic_vars[1], $clinic_attribute);
+	  $patient_vars = getClinicData($patient_vars[0], $patient_vars[1], $patient_attribute);
 	  
 	}
       }
       if ($_POST["submit"]) {
 	$verify = true;
-	$str = "DELETE FROM clinic WHERE " . $clinic_attribute[0] . " = '" . $clinic_vars[0] . "' AND "  . $clinic_attribute[1] . " = '" . $clinic_vars[1] . "'";
+	$str = "DELETE FROM person WHERE " . $patient_attribute[0] . " = '" . $patient_vars[0] . "' AND "  . $patient_attribute[1] . " = '" . $patient_vars[1] . "'";
 	$result = mysql_query($str);
-	//$result = mysql_query("DELETE FROM clinic WHERE clinic_id = '$clinic_id' AND passwd = '$passwd'");
+	//$result = mysql_query("DELETE FROM person WHERE patient_id = '$patient_id' AND passwd = '$passwd'");
 	if (!$result) {
 	  //die('クエリーが失敗しました。'.mysql_error());
 	  print "クエリーが失敗しました。".mysql_error()."<P>";
@@ -198,8 +212,8 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
       } 
     } else if($cmd == "get"){
       if ($_POST["verify"]) {
-	if(userIdVerify($clinic_vars[0])){
-	  if(passwordVerify($clinic_vars[0], $clinic_vars[1])){
+	if(userIdVerify($patient_vars[0])){
+	  if(passwordVerify($patient_vars[0], $patient_vars[1])){
 	    $verify = true;
 	  } else {
 	    //print "<font color=\"red\">ERROR: パスワードが一致しません。</font>";
@@ -212,14 +226,14 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
 	//print_r($table_error);
 	if($verify == true){
 	  print "以下のデータを取得しました。";
-	  $clinic_vars = getClinicData($clinic_vars[0], $clinic_vars[1], $clinic_attribute);
+	  $patient_vars = getClinicData($patient_vars[0], $patient_vars[1], $patient_attribute);
 	  
 	}
       }
     }
     /*
     //// 表の中身をダンプする
-    //$str = "SELECT * FROM user WHERE clinic_id = '$clinic_id' AND passwd = '$passwd'";
+    //$str = "SELECT * FROM user WHERE patient_id = '$patient_id' AND passwd = '$passwd'";
     //print $str."<P>";
     $result = mysql_query("SELECT * FROM clinic");
     if (!$result) {
@@ -231,7 +245,7 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
       
       while ($row = mysql_fetch_assoc($result)) {
 	 print('<p>');
-	 print('clinic_id='.$row['clinic_id']);
+	 print('patient_id='.$row['patient_id']);
 	 print(',password='.$row['passwd']);
 	 print(',name='.$row['name']);
 	 print(',yomi='.$row['yomi']);
@@ -271,21 +285,24 @@ $table->setAutoGrow(true);
 $table->setCellContents(0, 0, "属性");
 $table->setCellContents(0, 1, "値");
 
-for ($nc = 0; $nc < count($clinic_attribute); $nc++) {
-  $table->setCellContents($nc+1, 0, $clinic_caption[$nc]);
+for ($nc = 0; $nc < count($patient_attribute); $nc++) {
+  $table->setCellContents($nc+1, 0, $patient_caption[$nc]);
   // 入力チェック or 入力やりなおし
-  if($verify == false){  
+  if($verify == false){  // 最初のページ
     $err = "";
     if($table_error[$nc] == "under_flow" || $table_error[$nc] == "over_flow"){
-      $err = "<font color=\"red\">" . $clinic_caption[$nc] . "は" . $clinic_vars_min[$nc] . "文字以上" . $clinic_vars_max[$nc] . "文字以下</font>";
+      $err = "<font color=\"red\">" . $patient_caption[$nc] . "は" . $patient_vars_min[$nc] . "文字以上" . $patient_vars_max[$nc] . "文字以下</font>";
     }
-    
-    $str = $err . "<input type='text' name='" . $clinic_attribute[$nc] . "' value='" . $clinic_vars[$nc] . "' size=50 />";
-  } else if($verify == true && $_POST["verify"]){
+    $disable = "";
+    if($nc == 1){
+      $disable = "disabled = \"disabled\"";
+    }
+    $str = $err . "<input type='text' name='" . $patient_attribute[$nc] . "' value='" . $patient_vars[$nc] . "' size=50 " . $disable ."/>";
+  } else if($verify == true && $_POST["verify"]){// 確認のページ
     // クエリー実行
-    $str = htmlspecialchars($clinic_vars[$nc], ENT_QUOTES, "UTF-8") ."<input type='hidden' name='" . $clinic_attribute[$nc] . "' value='" . $clinic_vars[$nc] . "' />";
-  } else {
-    $str = htmlspecialchars($clinic_vars[$nc], ENT_QUOTES, "UTF-8");
+    $str = htmlspecialchars($patient_vars[$nc], ENT_QUOTES, "UTF-8") ."<input type='hidden' name='" . $patient_attribute[$nc] . "' value='" . $patient_vars[$nc] . "' />";
+  } else {// 結果表示ページ
+    $str = htmlspecialchars($patient_vars[$nc], ENT_QUOTES, "UTF-8");
   }
   $table->setCellContents($nc+1, 1, $str);
 }
@@ -303,7 +320,7 @@ if($verify == false && $_POST["verify"]){
 
 ?>
 
-<form action="registrationView.php" method="POST">
+<form action="patient_reg.php" method="POST">
   <?php echo $table->toHtml(); ?>
 <P>
   <?php if($verify == false){
@@ -339,7 +356,7 @@ print "
 }
 ?>
 <P>
-<a href="admin.php">Back</a><P>
+<a href="userTop.php">Back to User Top Page</a><P>
 </form>
 </body>
 </html>
@@ -370,12 +387,12 @@ function inputCheck($id, $pwd){
      }*/ 
    return true;
 }
-function clinic_idVerify($id){
+function patient_idVerify($id){
   return false;
 }
 function userIdVerify($id){
 
-  $result = mysql_query("SELECT * FROM clinic WHERE clinic_id = '$id'");
+  $result = mysql_query("SELECT * FROM person WHERE patient_id = '$id'");
   if (!$result) {
     //die('クエリーが失敗しました。'.mysql_error());
     print "クエリーが失敗しました。".mysql_error()."</P>";
@@ -392,7 +409,7 @@ function userIdVerify($id){
 
 function passwordVerify($id, $pwd){
 
-  $result = mysql_query("SELECT * FROM clinic WHERE clinic_id = '$id' AND passwd = '$pwd'");
+  $result = mysql_query("SELECT * FROM person WHERE patient_id = '$id' AND passwd = '$pwd'");
   if (!$result) {
     print "クエリーが失敗しました。".mysql_error()."</P>";
     return false;
@@ -407,7 +424,7 @@ function passwordVerify($id, $pwd){
   return true;
 }
 function getClinicData($id, $pwd, $attr){
-  $result = mysql_query("SELECT * FROM clinic WHERE clinic_id = '$id' AND passwd = '$pwd'");
+  $result = mysql_query("SELECT * FROM person WHERE patient_id = '$id' AND passwd = '$pwd'");
   if (!$result) {
      die('クエリーが失敗しました。'.mysql_error());
   } else {  

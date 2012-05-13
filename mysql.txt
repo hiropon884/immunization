@@ -2,9 +2,9 @@ create database immunization character set utf8;
 
 use immunization;
 
-create table clinic(clinic_id int auto_increment, passwd varchar(20), name varchar(50), yomi varchar(100), email varchar(50), zipcode varchar(8), location1 varchar(255), location2 varchar(255), tel varchar(13), index(clinic_id));
+create table clinic(clinic_id int auto_increment, passwd varchar(20), name varchar(50), yomi varchar(100), zipcode varchar(8), location1 varchar(255), location2 varchar(255), tel varchar(13), email varchar(50), index(clinic_id));
 
-create table person(person_id int auto_increment, clinic_id int, id varchar(100), familiy_name varchar(10), family_name_yomi varchar(20), personal_name varchar(10), personal_name_yomi varchar(20), birthday varchar(10), zipcode varchar(8), location1 varchar(255), location2 varchar(255), tel varchar(13), index(person_id));
+create table person(person_id int auto_increment, clinic_id int, patient_id varchar(20), familiy_name varchar(10), family_name_yomi varchar(20), personal_name varchar(10), personal_name_yomi varchar(20), birthday varchar(10), zipcode varchar(8), location1 varchar(255), location2 varchar(255), tel varchar(13), email varchar(50), index(person_id));
 
 create table immunization(immunization_id int auto_increment, immunization_name varchar(20), regular varchar(2), kinds varchar(3), immunization_num int, comment varchar(255), timestamp varchar(10), index(immunization_id));
 

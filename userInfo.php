@@ -7,11 +7,11 @@
 
 <?php
 require_once 'HTML/Table.php';
-$clinic_attribute = array("clinic_id", "passwd", "name", "yomi", "email",
-			  "zipcode" ,"location1", "location2", "tel");
+$clinic_attribute = array("clinic_id", "passwd", "name", "yomi", "zipcode",
+			  "location1", "location2", "tel", "email");
 $clinic_caption =array("病院ID", "パスワード", "病院名", "病院名（読み）",
-		       "メールアドレス", "郵便番号", "住所１", "住所２",
-		       "電話番号");
+		       "郵便番号", "住所１", "住所２",
+		       "電話番号", "メールアドレス", );
 
 //SQLサーバーへ接続
 //$link = mysql_connect('localhost', 'root', 'admin');

@@ -53,7 +53,8 @@ if (isset($_POST["login"])) {
 	$_SESSION["clinic_id"] = $_POST["clinic_id"];
 
 	// 管理者専用画面へリダイレクト
-	$login_url = "http://{$_SERVER["HTTP_HOST"]}/immunization/anq_result.php";
+	//$login_url = "http://{$_SERVER["HTTP_HOST"]}/immunization/anq_result.php";
+	$login_url = "http://{$_SERVER["HTTP_HOST"]}/immunization/userTop.php";
 	header("Location: {$login_url}");
       } else { 
 	$error_message = "ユーザ名もしくはパスワードが違っています。";
