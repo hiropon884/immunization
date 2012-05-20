@@ -1,17 +1,31 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<title>All User Dump</title>
+<title>Patient Data Dump</title>
 </head>
 <body>
 
 <?php
 require_once 'HTML/Table.php';
-$clinic_attribute = array("clinic_id", "passwd", "name", "yomi", "zipcode",
-			  "location1", "location2", "tel", "email");
-$clinic_caption =array("病院ID", "パスワード", "病院名", "病院名（読み）",
-		       "郵便番号", "住所１", "住所２",
-		       "電話番号", "メールアドレス", );
+
+session_start(); 
+// ログイン済みかどうかの変数チェックを行う
+if (!isset($_SESSION["clinic_id"])) {
+
+  // 変数に値がセットされていない場合は不正な処理と判断し、ログイン画面へリダイレクトさせる
+  $no_login_url = "http://{$_SERVER["HTTP_HOST"]}/immunization/login.php";
+  header("Location: {$no_login_url}");
+  exit;
+}
+
+$patient_attribute = array("person_id", "clinic_id", "patient_id", 
+			  "family_name", "family_name_yomi", "personal_name", 
+			  "personal_name_yomi", "birthday", "zipcode",
+			   "location1", "location2", "tel", "email");
+$patient_caption = array("人ID","病院ID", "患者ID", "氏", "氏（読み）","名", 
+			"名（読み）", "生年月日", "郵便番号", "住所１", "住所２",
+			"電話番号", "メールアドレス");
+$clinic_id = $_SESSION["clinic_id"];
 
 //SQLサーバーへ接続
 //$link = mysql_connect('localhost', 'root', 'admin');
@@ -35,7 +49,7 @@ if (!$link) {
   //// クエリーの実行
   //$str = "SELECT * FROM user WHERE userid = '$userid' AND passwd = '$passwd'";
   //print $str."<P>";
-  $result = mysql_query("SELECT * FROM clinic");
+  $result = mysql_query("SELECT * FROM person");
   if (!$result) {
      die('クエリーが失敗しました。'.mysql_error());
   } else {  
@@ -47,8 +61,8 @@ if (!$link) {
     
     while ($row = mysql_fetch_assoc($result)) {
       $tableItem = array();
-      for ($cnt = 0; $cnt < count($clinic_attribute); $cnt++) {
-	$tableItem[] = $row[$clinic_attribute[$cnt]];
+      for ($cnt = 0; $cnt < count($patient_attribute); $cnt++) {	
+	$tableItem[] = $row[$patient_attribute[$cnt]];
       }
      
       $tableData[] = $tableItem;
@@ -63,19 +77,27 @@ $table = new HTML_Table($attrs);
 $table->setAutoGrow(true);
 $table->setAutoFill('n/a');
 
+$tbl_cnt=0;
+
 for ($nr = 0; $nr < count($tableData); $nr++) {
-  $table->setHeaderContents($nr+1, 0, $tableData[$nr][0]);
-  for ($i = 1; $i < count($tableData[$nr]); $i++) {
-    if ('' != $tableData[$nr][$i]) {
-      $table->setCellContents($nr+1, $i, htmlspecialchars($tableData[$nr][$i], ENT_QUOTES, 'UTF-8'));
+  //echo $tableData[$nr][1]."<P>";
+  if($tableData[$nr][1] == $clinic_id){
+    $table->setHeaderContents($tbl_cnt+1, 0, $tableData[$nr][0]);
+    for ($i = 1; $i < count($tableData[$nr]); $i++) {
+      //echo $tableData[$nr][$i]." <P>";
+      if ('' != $tableData[$nr][$i]) {
+	$table->setCellContents($tbl_cnt+1, $i, htmlspecialchars($tableData[$nr][$i], ENT_QUOTES, 'UTF-8')); 
+      }
     }
+    $tbl_cnt++;
   }
 }
+
 $altRow = array('bgcolor' => 'lightgray');
 $table->altRowAttributes(1, null, $altRow);
 
-for ($cnt = 0; $cnt < count($clinic_caption); $cnt++) {
-  $table->setHeaderContents(0, $cnt, $clinic_caption[$cnt]);
+for ($cnt = 0; $cnt < count($patient_caption); $cnt++) {
+  $table->setHeaderContents(0, $cnt, $patient_caption[$cnt]);
 }
 
 $hrAttrs = array('bgcolor' => 'silver');
@@ -87,7 +109,7 @@ echo $table->toHtml();
 ?>
 
 <P>
-<a href="admin.php">Back</a><P>
+<a href="userTop.php">Back to UserTop</a><P>
 
 </body>
 </html>

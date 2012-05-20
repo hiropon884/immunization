@@ -72,6 +72,7 @@ if (isset($_POST["login"])) {
 
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <title>ログイン画面</title>
 </head>
 <body>
@@ -92,5 +93,7 @@ if ($error_db) {
 パスワード：<input type="password" name="password" value="" /><br />
 <input type="submit" name="login" value="ログイン" />
 </form>
+<P>
+<a href="admin.php">Back to Admin Page</a><P>
 </body>
 </html>

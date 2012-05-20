@@ -22,6 +22,7 @@ session_destroy();
 
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <meta http-equiv="Refresh" content="5; URL=index.html">
 <title>test page2</title>
 </head>

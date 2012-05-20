@@ -13,6 +13,7 @@ if (!isset($_SESSION["clinic_id"])) {
 
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <title>User Top</title>
 </head>
 <body>
@@ -21,8 +22,8 @@ print 'session_id='.session_id().'<P>';
 ?>
 患者メニュー<P>
 <UI>
-<LI><a href="patient_reg.php">患者の登録</a><br>
-<LI><a href="patient_search.php">患者の検索</a><br>
+<LI><a href="patient_reg.php">患者の登録・検索</a><br>
+<LI><a href="patient_list.php">患者一覧</a><br>
 </UI><P>
 病院側メニュー<P>
 <UI>

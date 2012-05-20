@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <title>Patient Registration</title>
 </head>
 <body>
@@ -31,11 +32,12 @@ $patient_vars = array();
 $table_error = array();
 $verify = false;
 
-
+$posted_item_num=0;
 for ($cnt = 0; $cnt < count($patient_attribute); $cnt++) {
   $table_error[] = false;
   //$patient_vars[$cnt] = "null";
   if(isset($_POST[$patient_attribute[$cnt]])){
+    $posted_item_num++;
     $patient_vars[$cnt] = $_POST[$patient_attribute[$cnt]];
   }
 }
@@ -44,11 +46,11 @@ $patient_vars[1] = $_SESSION["clinic_id"];
 
 $cmd = "";
 if (isset($_POST["cmd"])) {
-  echo $_POST["cmd"]."<P>";
   $cmd = $_POST["cmd"];
 } else {
   $cmd = "none";
 }
+echo "cmd = " . $_POST["cmd"]."<P>";
 
 if ($_POST["submit"]) {
   echo "submit"."<P>";
@@ -210,7 +212,7 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
 	  print "<font color=\"red\">Success</font>: 以下のデータを削除しました。<P>";
 	}
       } 
-    } else if($cmd == "get"){
+    } else if($cmd == "get"){ // ユーザーデータの取得
       if ($_POST["verify"]) {
 	if(userIdVerify($patient_vars[0])){
 	  if(passwordVerify($patient_vars[0], $patient_vars[1])){
@@ -228,6 +230,87 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
 	  print "以下のデータを取得しました。";
 	  $patient_vars = getClinicData($patient_vars[0], $patient_vars[1], $patient_attribute);
 	  
+	}
+      }
+    } else if($cmd == "search"){ // ユーザーデータの検索
+      
+      if($posted_item_num > 0){
+	$str = "SELECT * FROM person";
+	$write_num=0;
+	for ($cnt = 0; $cnt < count($patient_attribute); $cnt++) {
+	  if($patient_vars[$cnt] != ""){
+	    if($write_num == 0){
+	      $str .= " WHERE ";
+	    } else {
+	      $str .= " AND ";
+	    }
+	    if($cnt > 1){
+	      $str .= $patient_attribute[$cnt] . " = \"" . $patient_vars[$cnt] . "\"";
+	    } else {
+	      $str .= $patient_attribute[$cnt] . " = " . $patient_vars[$cnt];
+	    }
+	    $write_num++;
+	  }
+	}
+	//echo $str . "<P>";
+	$result = mysql_query($str);
+	if (!$result) {
+	  die('クエリーが失敗しました。'.mysql_error());
+	} else {  
+	  ////// 結果の行数を得る
+	  $num_rows = mysql_num_rows($result);
+	  echo 'total user numbera = ' . $num_rows . '<p>';
+	  if($num_rows > 0){
+	    $tableData = array();
+	    
+	    while ($row = mysql_fetch_assoc($result)) {
+	      $tableItem = array();
+	      for ($cnt = 0; $cnt < count($patient_attribute); $cnt++) {	
+		$tableItem[] = $row[$patient_attribute[$cnt]];
+	      }
+	      
+	      $tableData[] = $tableItem;
+	    }
+
+	    $attrs = array('width' => '800');
+	    $table = new HTML_Table($attrs);
+	    $table->setAutoGrow(true);
+	    //$table->setAutoFill('n/a');
+	      
+	    echo "<form action=\"patient_top.php\" method=\"POST\">";
+	    
+	    for ($nr = 0; $nr < count($tableData); $nr++) {
+	      //echo $tableData[$nr][1]."<P>";
+	      //$table->setHeaderContents($nr+1, 1, $tableData[$nr][0]);
+	      $str = "<button type=\"submit\" name=\"patient_id\" value=\"" . $tableData[$nr][0] ."\">選択</button>";
+	      //$str = "<input type=\"submit\" name=\"patient_id\" value=\"" . $tableData[$nr][0] ."\">";
+	      //$str = "<A href=patient_top.php>aaaa</a>";
+	      $table->setCellContents($nr+1, 0, $str); 
+	      for ($i = 0; $i < count($tableData[$nr]); $i++) {
+		//echo $tableData[$nr][$i]." <P>";
+		if ('' != $tableData[$nr][$i]) {
+		  $table->setCellContents($nr+1, $i+1, htmlspecialchars($tableData[$nr][$i], ENT_QUOTES, 'UTF-8')); 
+		}
+	      }
+	    }
+	    
+	    $altRow = array('bgcolor' => 'lightgray');
+	    $table->altRowAttributes(1, null, $altRow);
+	    
+	    for ($cnt = 0; $cnt < count($patient_caption); $cnt++) {
+	      $table->setHeaderContents(0, $cnt+1, $patient_caption[$cnt]);
+	    }
+	    
+	    $hrAttrs = array('bgcolor' => 'silver');
+	    $table->setRowAttributes(0, $hrAttrs, true);
+	    $table->setColAttributes(0, $hrAttrs);
+	    
+	    echo $table->toHtml();
+	    echo "</form>";
+
+	  } else {
+	    echo "検索条件に一致するデータがありませんでした。";
+	  }
 	}
       }
     }
@@ -311,7 +394,7 @@ $table->altRowAttributes(0, null, $altRow);
 
 $hrAttrs = array('bgcolor' => 'silver');
 $table->setRowAttributes(0, $hrAttrs, true);
-if($cmd != "none"){
+if($cmd != "none" && $cmd != "search"){
 if($verify == false && $_POST["verify"]){
   //echo "test=". $verify ."<P>";
   print "<font color=\"red\">入力が間違っています</font>";
@@ -330,6 +413,7 @@ print "
 <input type=\"radio\" name=\"cmd\" value=\"update\" >更新
 <input type=\"radio\" name=\"cmd\" value=\"get\" >データ取得
 <input type=\"radio\" name=\"cmd\" value=\"delete\" >削除
+<input type=\"radio\" name=\"cmd\" value=\"search\" >検索
 ";
 }
 ?>
@@ -350,7 +434,7 @@ print "
     }
    } else {
 print "
-<input type=\"submit\" name=\"verify\" value=\"確認\" />
+<input type=\"submit\" name=\"verify\" value=\"実行\" />
 <input type=\"submit\" name=\"reset\" value=\"リセット\" />
 ";
 }
