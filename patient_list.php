@@ -75,18 +75,22 @@ $close_flag = mysql_close($link);
 $attrs = array('width' => '800');
 $table = new HTML_Table($attrs);
 $table->setAutoGrow(true);
-$table->setAutoFill('n/a');
+//$table->setAutoFill('n/a');
 
 $tbl_cnt=0;
 
+echo "<form action=\"patient_top.php\" method=\"POST\">";
+	   
 for ($nr = 0; $nr < count($tableData); $nr++) {
   //echo $tableData[$nr][1]."<P>";
   if($tableData[$nr][1] == $clinic_id){
-    $table->setHeaderContents($tbl_cnt+1, 0, $tableData[$nr][0]);
-    for ($i = 1; $i < count($tableData[$nr]); $i++) {
+    //$table->setHeaderContents($tbl_cnt+1, 1, $tableData[$nr][0]);
+     $str = "<button type=\"submit\" name=\"patient_id\" value=\"" . $tableData[$nr][0] ."\">選択</button>";
+     $table->setCellContents($tbl_cnt+1, 0, $str); 
+    for ($i = 0; $i < count($tableData[$nr]); $i++) {
       //echo $tableData[$nr][$i]." <P>";
       if ('' != $tableData[$nr][$i]) {
-	$table->setCellContents($tbl_cnt+1, $i, htmlspecialchars($tableData[$nr][$i], ENT_QUOTES, 'UTF-8')); 
+	$table->setCellContents($tbl_cnt+1, $i+1, htmlspecialchars($tableData[$nr][$i], ENT_QUOTES, 'UTF-8')); 
       }
     }
     $tbl_cnt++;
@@ -97,7 +101,7 @@ $altRow = array('bgcolor' => 'lightgray');
 $table->altRowAttributes(1, null, $altRow);
 
 for ($cnt = 0; $cnt < count($patient_caption); $cnt++) {
-  $table->setHeaderContents(0, $cnt, $patient_caption[$cnt]);
+  $table->setHeaderContents(0, $cnt+1, $patient_caption[$cnt]);
 }
 
 $hrAttrs = array('bgcolor' => 'silver');
@@ -105,6 +109,7 @@ $table->setRowAttributes(0, $hrAttrs, true);
 $table->setColAttributes(0, $hrAttrs);
 
 echo $table->toHtml();
+echo "</form>";
 
 ?>
 

@@ -50,6 +50,11 @@ echo "clinic_id = " . $clinic_id . "<P>";
 echo "patient_id = " . $patient_id . "<P>";
 
 ?>
+
+<a href="calendar">予防接種カレンダー</a><P>
+<a href="patient_past.php">接種履歴詳細</a><BR>
+<a href="patient_booklist">予約一覧</a><BR>
+
 <a href="userTop.php">Back to User Top Page</a><P>
 </form>
 </body>
