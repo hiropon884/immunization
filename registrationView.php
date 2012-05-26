@@ -414,7 +414,7 @@ function getClinicData($id, $pwd, $attr){
   } else {  
     ////// 結果の行数を得る
     $num_rows = mysql_num_rows($result);
-    echo 'total user numbera = ' . $num_rows . '<p>';
+    echo 'total user number = ' . $num_rows . '<p>';
     
     while ($row = mysql_fetch_assoc($result)) {
       $tableItem = array();

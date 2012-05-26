@@ -10,8 +10,7 @@ create table immunization(immunization_id int auto_increment, immunization_name 
 
 create table immunization_term(detail_id varchar(4), term_start int, term_end int);
 
-create table book(personal_id int, detail_id int, day varchar(10));
-create table done(personal_id int, detail_id int, day varchar(10), lot_num varchar(20));
+create table book(person_id int, detail_id int, day varchar(10), lot_num varchar(20), state int);
 
 insert into immunization values(null, 'インフルエンザb型(ヒブ)', '任意', '不活性', 4, '7ヶ月ー11ヶ月で初回接種：2回接種の1年後に追加1回接種。1歳ー4歳で初回接種：1回接種のみ','2012_05_06');
 insert into immunization values(null, '肺炎球菌(PCV7)', '任意', '不活性', 4, '7ヶ月ー11ヶ月で初回接種：2回接種後60日以上あけて1歳以降に追加1回接種。1歳ー23ヶ月で初回接種：1回目と2回目の接種を60日以上あける。2歳ー9歳以下初回接種：1回接種のみ','2012_05_06');

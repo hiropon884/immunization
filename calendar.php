@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<title>Patient Top Page </title>
+<title>Immunization Calendar Page </title>
 </head>
 <body>
 
@@ -46,15 +46,16 @@ for ($cnt = 0; $cnt < count($patient_attribute); $cnt++) {
 //print_r($patient_vars);
 
 $clinic_id = $_SESSION["clinic_id"];
-if(!isset($_POST["person_id"])) {
-  $person_id = $_SESSION["person_id"];
-} else {
-  $person_id = $_POST["person_id"];
-}
-$birthday = "";
-echo "clinic_id = " . $clinic_id . "<P>";
-echo "person_id = " . $person_id . "<P>";
+$person_id = $_SESSION["person_id"];
+$birthday = $_SESSION["birthday"];
+$person_name = $_SESSION["person_name"];
 
+echo "clinic_id = " . $clinic_id . "<BR>";
+echo "person_id = " . $person_id . "<BR>";
+echo "person_name = " . $person_name . "<BR>";
+echo "birthday = " . $birthday . "<P>";
+
+/*
 //SQLサーバーへ接続
 //$link = mysql_connect('localhost', 'root', 'admin');
 $link = mysql_connect('localhost', 'db_user', '123456');
@@ -76,7 +77,7 @@ mysql_set_charset('utf8');
 
 //// クエリーの実行
 $str = "SELECT * FROM person WHERE person_id = $person_id";
-//print $str."<P>";
+print $str."<P>";
 $result = mysql_query($str);
 if (!$result) {
   die('クエリーが失敗しました。'.mysql_error());
@@ -89,8 +90,6 @@ if (!$result) {
   }
   $row = mysql_fetch_assoc($result);
   $birthday = $row['birthday'];
-  $family_name = $row['family_name'];
-  $personal_name = $row['personal_name'];
   echo "birthday=".$birthday."<P>";
   //while ($row = mysql_fetch_assoc($result)) {
   //  $tableItem = array();
@@ -104,18 +103,12 @@ if (!$result) {
 
 // サーバー切断
 $close_flag = mysql_close($link);
-
-$_SESSION["person_id"] = $person_id;
-$_SESSION["birthday"] = $birthday;
-$_SESSION["person_name"] = $family_name . " " . $birthday;
-
+if($birthday != ""){
+  $_SESSION["birthday"] = $birthday;
+  }*/
 ?>
 
-<a href="calendar.php">予防接種カレンダー</a><BR>
-<a href="patient_past.php">接種履歴詳細</a><BR>
-<a href="patient_booklist.php">予約一覧</a><P>
-
-<a href="userTop.php">Back to User Top Page</a><P>
+<a href="patient_top.php">Back to Person Top Page</a><P>
 </form>
 </body>
 </html>

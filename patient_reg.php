@@ -282,7 +282,7 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
 	    for ($nr = 0; $nr < count($tableData); $nr++) {
 	      //echo $tableData[$nr][1]."<P>";
 	      //$table->setHeaderContents($nr+1, 1, $tableData[$nr][0]);
-	      $str = "<button type=\"submit\" name=\"patient_id\" value=\"" . $tableData[$nr][0] ."\">選択</button>";
+	      $str = "<button type=\"submit\" name=\"person_id\" value=\"" . $tableData[$nr][0] ."\">選択</button>";
 	      //$str = "<input type=\"submit\" name=\"patient_id\" value=\"" . $tableData[$nr][0] ."\">";
 	      //$str = "<A href=patient_top.php>aaaa</a>";
 	      $table->setCellContents($nr+1, 0, $str); 

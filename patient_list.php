@@ -85,7 +85,7 @@ for ($nr = 0; $nr < count($tableData); $nr++) {
   //echo $tableData[$nr][1]."<P>";
   if($tableData[$nr][1] == $clinic_id){
     //$table->setHeaderContents($tbl_cnt+1, 1, $tableData[$nr][0]);
-     $str = "<button type=\"submit\" name=\"patient_id\" value=\"" . $tableData[$nr][0] ."\">選択</button>";
+     $str = "<button type=\"submit\" name=\"person_id\" value=\"" . $tableData[$nr][0] ."\">選択</button>";
      $table->setCellContents($tbl_cnt+1, 0, $str); 
     for ($i = 0; $i < count($tableData[$nr]); $i++) {
       //echo $tableData[$nr][$i]." <P>";
