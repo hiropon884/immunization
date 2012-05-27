@@ -187,7 +187,7 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
       }
       if ($_POST["submit"]) {
 	$verify = true;
-	$str = "DELETE FROM clinic WHERE " . $clinic_attribute[0] . " = '" . $clinic_vars[0] . "' AND "  . $clinic_attribute[1] . " = '" . $clinic_vars[1] . "'";
+	$str = "DELETE FROM clinic WHERE " . $clinic_attribute[0] . " = '" . $clinic_vars[0] . "' AND "  . $clinic_attribute[1] . " = '" . $clinic_vars[1] . "';";
 	$result = mysql_query($str);
 	//$result = mysql_query("DELETE FROM clinic WHERE clinic_id = '$clinic_id' AND passwd = '$passwd'");
 	if (!$result) {
@@ -269,7 +269,7 @@ $attrs = array('width' => '600');
 $table = new HTML_Table($attrs);
 $table->setAutoGrow(true);
 
-$table->setCellContents(0, 0, "属性");
+$table->setCellContents(0, 0, "");
 $table->setCellContents(0, 1, "値");
 
 for ($nc = 0; $nc < count($clinic_attribute); $nc++) {
@@ -296,57 +296,51 @@ $table->altRowAttributes(0, null, $altRow);
 $hrAttrs = array('bgcolor' => 'silver');
 $table->setRowAttributes(0, $hrAttrs, true);
 if($cmd != "none"){
-if($verify == false && $_POST["verify"]){
-  //echo "test=". $verify ."<P>";
-  print "<font color=\"red\">入力が間違っています</font>";
-}
+  if($verify == false && $_POST["verify"]){
+    //echo "test=". $verify ."<P>";
+    print "<font color=\"red\">入力が間違っています</font>";
+  }
 }
 
+echo "<form action=\"registrationView.php\" method=\"POST\">";
+echo $table->toHtml();
+echo "<P>";
+if($verify == false){
+  echo "<input type=\"radio\" name=\"cmd\" value=\"none\" checked=\"checked\">None";
+  echo "<input type=\"radio\" name=\"cmd\" value=\"add\" >新規登録";
+  echo "<input type=\"radio\" name=\"cmd\" value=\"update\" >更新";
+  echo "<input type=\"radio\" name=\"cmd\" value=\"get\" >データ取得";
+  echo "<input type=\"radio\" name=\"cmd\" value=\"delete\" >削除
+";
+}
+echo "<P>";
+if($_POST["submit"]){
+} else if($verify == true){
+  if($cmd == "get"){
+    echo "<input type=\"submit\" name=\"cancel\" value=\"戻る\" />
+";
+  } else {
+    echo "<input type=\"hidden\" name=\"cmd\" value=\"" . $cmd ."\" />";
+    echo "<input type=\"submit\" name=\"submit\" value=\"実行\" />
+";
+    echo "<input type=\"submit\" name=\"cancel\" value=\"キャンセル\" />";
+  }
+} else {
+  echo "<input type=\"submit\" name=\"verify\" value=\"確認\" />";
+  echo "<input type=\"submit\" name=\"reset\" value=\"リセット\" />";
+}
+echo "</form>";
 ?>
 
-<form action="registrationView.php" method="POST">
-  <?php echo $table->toHtml(); ?>
-<P>
-  <?php if($verify == false){
-print "
-<input type=\"radio\" name=\"cmd\" value=\"none\" checked=\"checked\">Nono
-<input type=\"radio\" name=\"cmd\" value=\"add\" >新規登録
-<input type=\"radio\" name=\"cmd\" value=\"update\" >更新
-<input type=\"radio\" name=\"cmd\" value=\"get\" >データ取得
-<input type=\"radio\" name=\"cmd\" value=\"delete\" >削除
-";
-}
-?>
-<P>
-<?php 
-  if($_POST["submit"]){
-  } else if($verify == true){
-    if($cmd == "get"){
-print "
-<input type=\"submit\" name=\"cancel\" value=\"戻る\" />
-";
-    } else {
-print "
-<input type=\"hidden\" name=\"cmd\" value=\"" . $cmd ."\" />
-<input type=\"submit\" name=\"submit\" value=\"実行\" />
-<input type=\"submit\" name=\"cancel\" value=\"キャンセル\" />
-";
-    }
-   } else {
-print "
-<input type=\"submit\" name=\"verify\" value=\"確認\" />
-<input type=\"submit\" name=\"reset\" value=\"リセット\" />
-";
-}
-?>
+
 <P>
 <a href="admin.php">Back</a><P>
-</form>
+
 </body>
 </html>
 
 <?php
-  function checkInput($vars, $min, $max, $err){
+function checkInput($vars, $min, $max, $err){
   for ($cnt = 1; $cnt < count($vars); $cnt++) {
     if($min[$cnt] > mb_strlen($vars[$cnt])){
       //echo "under<P>";
