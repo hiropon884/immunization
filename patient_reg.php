@@ -408,7 +408,7 @@ if($verify == false && $_POST["verify"]){
 <P>
   <?php if($verify == false){
 print "
-<input type=\"radio\" name=\"cmd\" value=\"none\" checked=\"checked\">Nono
+<input type=\"radio\" name=\"cmd\" value=\"none\" checked=\"checked\">None
 <input type=\"radio\" name=\"cmd\" value=\"add\" >新規登録
 <input type=\"radio\" name=\"cmd\" value=\"update\" >更新
 <input type=\"radio\" name=\"cmd\" value=\"get\" >データ取得

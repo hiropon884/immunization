@@ -6,6 +6,8 @@
 <body>
 
 <?php
+   
+ini_set('error_reporting', E_ALL);
 
 require_once 'HTML/Table.php';
 require_once "medicine.php";
@@ -57,6 +59,10 @@ echo "person_name = " . $person_name . "<BR>";
 echo "birthday = " . $birthday . "<P>";
 
 $medAry = array();
+$tmp = explode("_", $birthday);
+$year = $tmp[0];
+$month = 10;//$tmp[1];
+$day = 30;//$tmp[2];
 
 //SQLサーバーへ接続
 //$link = mysql_connect('localhost', 'root', 'admin');
@@ -86,7 +92,7 @@ if (!$result) {
 } else {  
   ////// 結果の行数を得る
   $num_rows = mysql_num_rows($result);
-  echo 'total user number = ' . $num_rows . '<p>';
+  echo 'total item number = ' . $num_rows . '<p>';
 
   while ($row = mysql_fetch_assoc($result)) {
     $tmpMed = new medicine();
@@ -99,30 +105,70 @@ if (!$result) {
     $tmpMed->setTimestamp($row['timestamp']);
     $medAry[] = $tmpMed;
   }
+  
+  $str = "SELECT * FROM immunization_term";
+  $result = mysql_query($str);
+  if (!$result) {
+    die('クエリーが失敗しました。'.mysql_error());
+  } else { 
+    
+     $num_rows = mysql_num_rows($result);
+     echo 'total index number = ' . $num_rows . '<p>';
+     while ($row = mysql_fetch_assoc($result)) {
+       $tmp_str = explode("_", $row['detail_id']);
+       $id = $tmp_str[0] - 1;
+       $tmpMed = $medAry[$id];
+       
+       $frequency = $tmpMed->getFrequency();
+       if($tmpMed->getFrequency() >= $tmp_str[1]){
+	 $tmpMed->pushTerm($row['term_start'], $row['term_end']);
+       }
+     }
+  }
+  
+  for ($cnt = 0; $cnt < count($medAry); $cnt++) {
+    $tmpMed = $medAry[$cnt];
+     //echo $tmpMed->getId() . " ";
+    echo $tmpMed->getName() . " ";
+    echo $tmpMed->getRegular() ." ";
+    echo $tmpMed->getKinds() ." ";
+    echo $tmpMed->getFrequency() . " ";
+    //echo $tmpMed->getComment() . " ";
+    //echo $tmpMed->getTimestamp() . " ";
+    echo "<BR>";
 
-  //while ($row = mysql_fetch_assoc($result)) {
-  //  $tableItem = array();
-  //for ($cnt = 0; $cnt < count($patient_attribute); $cnt++) {	
-  //print $row[$patient_attribute[$cnt]] . "<P>";
-  //}
-  
-  //$tableData[] = $tableItem;
-  
+    $baseSec = mktime(0,0,0,$month,$day,$year);
+    for($i=0;$i<$tmpMed->getFrequency();$i++){
+      
+      $num = $i+1;
+      echo  $num . "回目 : ";
+      //echo $i . " ";
+      
+      $baseSec = mktime(0,0,0,$month + $tmpMed->getHeadPeriod($i),$day,$year);
+      $dt = date("Y-m-d", $baseSec);
+      echo $dt;
+      /*
+      while($tmp_month > 12){
+	$tmp_year++;
+	$tmp_month -= 12;
+      }
+      echo $tmp_year . "/" . $tmp_month ."/" . $tmp_day;*/
+      
+      echo " - ";
+      $baseSec = mktime(0,0,0,$month + $tmpMed->getTailPeriod($i),$day,$year);
+      $dt = date("Y-m-d", $baseSec);
+      echo $dt."<BR>";
+      
+    }
+    echo "<P>"; 
+  }
 }
 
 // サーバー切断
-$close_flag = mysql_close($link);
-
-
-if($birthday != ""){
-  $_SESSION["birthday"] = $birthday;
+$close_flag = mysql_close($link); 
+if ($close_flag){
+  print('<p>切断に成功しました。</p>');
 }
-
-for ($cnt = 0; $cnt < count($medAry); $cnt++) {
-  $tmpMed = $medAry[$cnt];
-  echo $tmpMed->getName() . "<BR>";
-}
-
 ?>
 <?php
 
