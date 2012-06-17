@@ -28,6 +28,7 @@ print 'session_id='.session_id().'<P>';
 病院側メニュー<P>
 <UI>
 <LI><a href="statistical.php">統計データ表示</a><br>
+<LI><a href="immunization_term_setting.php">接種設定</a><br>
 </UI>
 <P>
 <a href="logout.php">ログアウト</a><br>

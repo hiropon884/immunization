@@ -85,7 +85,7 @@ mysql_set_charset('utf8');
 
 //// クエリーの実行
 $str = "SELECT * FROM immunization";
-print $str."<P>";
+//print $str."<P>";
 $result = mysql_query($str);
 if (!$result) {
   die('クエリーが失敗しました。'.mysql_error());
@@ -106,7 +106,7 @@ if (!$result) {
     $medAry[] = $tmpMed;
   }
   
-  $str = "SELECT * FROM immunization_term";
+  $str = "SELECT * FROM immunization_term WHERE clinic_id = '" . $clinic_id ."';";
   $result = mysql_query($str);
   if (!$result) {
     die('クエリーが失敗しました。'.mysql_error());
@@ -115,19 +115,25 @@ if (!$result) {
      $num_rows = mysql_num_rows($result);
      echo 'total index number = ' . $num_rows . '<p>';
      while ($row = mysql_fetch_assoc($result)) {
-       $tmp_str = explode("_", $row['detail_id']);
-       $id = $tmp_str[0] - 1;
+       
+       //$tmp_str = explode("_", $row['detail_id']);
+       //$id = $tmp_str[0] - 1;
+       $id = $row['immunization_id']-1;
+       $times = $row['times'];
        $tmpMed = $medAry[$id];
+
        
        $frequency = $tmpMed->getFrequency();
-       if($tmpMed->getFrequency() >= $tmp_str[1]){
+       if($tmpMed->getFrequency() >= $times){
 	 $tmpMed->pushTerm($row['term_start'], $row['term_end']);
        }
      }
   }
-  
+  $tmp = array();
+  $tmp2 = array();
   for ($cnt = 0; $cnt < count($medAry); $cnt++) {
     $tmpMed = $medAry[$cnt];
+    $tmp2[] = $medAry[$cnt]; 
      //echo $tmpMed->getId() . " ";
     echo $tmpMed->getName() . " ";
     echo $tmpMed->getRegular() ." ";
@@ -145,6 +151,11 @@ if (!$result) {
       //echo $i . " ";
       
       $baseSec = mktime(0,0,0,$month + $tmpMed->getHeadPeriod($i),$day,$year);
+      if($tmp[$baseSec] == ""){
+	$tmp[$baseSec] = $tmpMed;
+      } else {
+	echo "depricated!!!";
+      }
       $dt = date("Y-m-d", $baseSec);
       echo $dt;
       /*
@@ -162,6 +173,33 @@ if (!$result) {
     }
     echo "<P>"; 
   }
+  echo "aaaaaaaaaaaa";
+  //arsort($tmp2);
+  //print_r($tmp2);
+  for($i=0;$i<count($tmp2);$i++){
+    $val = $tmp2[$i];
+    echo $val->getId() . " ";
+    echo $val->getName() . " ";
+    echo $val->getRegular() ." ";
+    echo $val->getKinds() ." ";
+    echo $val->getFrequency() . " ";
+    echo $val->getComment() . " ";
+    echo $val->getTimestamp() . " ";
+    echo "<BR>";
+  }
+  ksort($tmp);
+  //print_r($tmp);
+  /*
+  foreach($tmp as $key => $val){
+    echo $val->getId() . " ";
+    echo $val->getName() . " ";
+    echo $val->getRegular() ." ";
+    echo $val->getKinds() ." ";
+    echo $val->getFrequency() . " ";
+    echo $val->getComment() . " ";
+    echo $val->getTimestamp() . " ";
+    echo "<BR>";
+    }*/
 }
 
 // サーバー切断

@@ -90,6 +90,15 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
 	//print_r($table_error);
 	if($verify == true){
 	  print "以下の内容で登録します。内容が合っているか今一度確認してください。";
+	  $str = "SELECT clinic_id FROM clinic ORDER BY clinic_id DESC;";
+	  $result = mysql_query($str);
+	  if (!$result) {
+	    print "クエリーが失敗しました。".mysql_error()."<P>";
+	    //die('クエリーが失敗しました。'.mysql_error());
+	  } else {
+	    $row = mysql_fetch_assoc($result);
+	    $clinic_vars[0] = $row['clinic_id'] + 1;
+	  }
 	}
       }
       if ($_POST["submit"]) {
@@ -111,6 +120,48 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
 	  //die('クエリーが失敗しました。'.mysql_error());
 	} else {
 	  print "<font color=\"red\">Success</font>: データを登録しました。<P>";
+	  print "clinic_id = " . $clinic_vars[0] . "<P>";
+	  //immunization_termの初期設定の登録
+	  print "Success: 接種期間データを登録開始。<P>";
+	  $result = mysql_query("SELECT * FROM immunization_term WHERE clinic_id = '-1'");
+	  if (!$result) {
+	    die('クエリーが失敗しました。'.mysql_error());
+	  } else {  
+	    
+	    ////// 結果の行数を得る
+	    $num_rows = mysql_num_rows($result);
+	    echo 'total user number = ' . $num_rows . '<p>';
+	    
+	    $term_attr = array("clinic_id","immunization_id","times","term_start","term_end");
+	    $tableItem = array();
+	    while ($row = mysql_fetch_assoc($result)) {
+	      $item = array();
+	      for ($cnt = 0; $cnt < count($term_attr); $cnt++) {
+		$item[] = $row[$term_attr[$cnt]];
+	      }
+	      $tableItem[] = $item;
+	    }
+	    
+	    
+	    for($cnt=0; $cnt < count($tableItem); $cnt++){
+	      $item = $tableItem[$cnt];
+	      $str = "INSERT INTO immunization_term VALUES ('" . $clinic_vars[0] ."', '";
+	      $last_item = count($term_attr) -1;
+	      for($i=1;$i < count($term_attr);$i++){
+		if($i == $last_item){
+		  $str .= $item[$i] . "');";
+		} else {
+		  $str .= $item[$i] . "','";
+		} 
+	      }
+	      //echo $str . "<P>";
+	      $result = mysql_query($str);
+	      if (!$result) {
+		print "クエリーが失敗しました。".mysql_error()."<P>";
+	      } 
+	    }
+	    print "Success: 接種期間データを完了。<P>";
+	  }
 	}
       }
       
