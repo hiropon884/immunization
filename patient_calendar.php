@@ -84,7 +84,7 @@ print('<p>immunization データベースを選択しました。</p>');
 mysql_set_charset('utf8');
 
 //// クエリーの実行
-$str = "SELECT * FROM immunization";
+$str = "SELECT body.immunization_id, body.immunization_name, body.regular, body.kinds, term.times, term.term_start FROM immunization as body INNER JOIN immunization_term as term ON body.immunization_id = term.immunization_id WHERE term.clinic_id = '" . $clinic_id . "';";
 //print $str."<P>";
 $result = mysql_query($str);
 if (!$result) {
@@ -93,113 +93,81 @@ if (!$result) {
   ////// 結果の行数を得る
   $num_rows = mysql_num_rows($result);
   echo 'total item number = ' . $num_rows . '<p>';
-
+  //$res = array();
+  $date_buf = array();
   while ($row = mysql_fetch_assoc($result)) {
     $tmpMed = new medicine();
     $tmpMed->setId($row['immunization_id']);
     $tmpMed->setName($row['immunization_name']);
     $tmpMed->setRegular($row['regular']);
     $tmpMed->setKinds($row['kinds']);
-    $tmpMed->setFrequency($row['frequency']);
-    $tmpMed->setComment($row['comment']);
-    $tmpMed->setTimestamp($row['timestamp']);
-    $medAry[] = $tmpMed;
-  }
-  
-  $str = "SELECT * FROM immunization_term WHERE clinic_id = '" . $clinic_id ."';";
-  $result = mysql_query($str);
-  if (!$result) {
-    die('クエリーが失敗しました。'.mysql_error());
-  } else { 
+    //$tmpMed->setFrequency($row['frequency']);
+    //$tmpMed->setComment($row['comment']);
+    //$tmpMed->setTimestamp($row['timestamp']);
+    $tmpMed->setTimes($row['times']);
+    //echo "times = " . $row['times'] . "<BR>";
+    $tmpMed->setTermStart($row['term_start']);
+    $baseSec = mktime(0,0,0,$month + $tmpMed->getTermStart(),$day,$year);
     
-     $num_rows = mysql_num_rows($result);
-     echo 'total index number = ' . $num_rows . '<p>';
-     while ($row = mysql_fetch_assoc($result)) {
-       
-       //$tmp_str = explode("_", $row['detail_id']);
-       //$id = $tmp_str[0] - 1;
-       $id = $row['immunization_id']-1;
-       $times = $row['times'];
-       $tmpMed = $medAry[$id];
-
-       
-       $frequency = $tmpMed->getFrequency();
-       if($tmpMed->getFrequency() >= $times){
-	 $tmpMed->pushTerm($row['term_start'], $row['term_end']);
-       }
-     }
+    $tmpMed->setDate(date("Y-m-d", $baseSec));
+    //if($date_buf[$baseSec] != ""){
+    //  $cnt = $date_buf[$baseSec];
+    //} 
+    //$medAry[] = $tmpMed;
+    $medAry[$baseSec+$date_buf[$baseSec]] = $tmpMed;
+    $date_buf[$baseSec] += 1;
   }
-  $tmp = array();
-  $tmp2 = array();
-  for ($cnt = 0; $cnt < count($medAry); $cnt++) {
-    $tmpMed = $medAry[$cnt];
-    $tmp2[] = $medAry[$cnt]; 
-     //echo $tmpMed->getId() . " ";
-    echo $tmpMed->getName() . " ";
-    echo $tmpMed->getRegular() ." ";
-    echo $tmpMed->getKinds() ." ";
-    echo $tmpMed->getFrequency() . " ";
-    //echo $tmpMed->getComment() . " ";
-    //echo $tmpMed->getTimestamp() . " ";
-    echo "<BR>";
 
-    $baseSec = mktime(0,0,0,$month,$day,$year);
-    for($i=0;$i<$tmpMed->getFrequency();$i++){
-      
-      $num = $i+1;
-      echo  $num . "回目 : ";
-      //echo $i . " ";
-      
-      $baseSec = mktime(0,0,0,$month + $tmpMed->getHeadPeriod($i),$day,$year);
-      if($tmp[$baseSec] == ""){
-	$tmp[$baseSec] = $tmpMed;
-      } else {
-	echo "depricated!!!";
-      }
-      $dt = date("Y-m-d", $baseSec);
-      echo $dt;
-      /*
-      while($tmp_month > 12){
-	$tmp_year++;
-	$tmp_month -= 12;
-      }
-      echo $tmp_year . "/" . $tmp_month ."/" . $tmp_day;*/
-      
-      echo " - ";
-      $baseSec = mktime(0,0,0,$month + $tmpMed->getTailPeriod($i),$day,$year);
-      $dt = date("Y-m-d", $baseSec);
-      echo $dt."<BR>";
-      
-    }
-    echo "<P>"; 
-  }
-  echo "aaaaaaaaaaaa";
-  //arsort($tmp2);
-  //print_r($tmp2);
-  for($i=0;$i<count($tmp2);$i++){
-    $val = $tmp2[$i];
+  ksort($medAry);
+
+  foreach($medAry as $key => $val){
+    //echo $key . "<P>";
+    //print_r($val);
     echo $val->getId() . " ";
     echo $val->getName() . " ";
     echo $val->getRegular() ." ";
     echo $val->getKinds() ." ";
-    echo $val->getFrequency() . " ";
-    echo $val->getComment() . " ";
-    echo $val->getTimestamp() . " ";
+    //echo $val->getFrequency() . " ";
+    //echo $val->getComment() . " ";
+    //echo $val->getTimestamp() . " ";
+    echo $val->getTimes() . " ";
+    echo $val->getTermStart() . " ";
+    echo $val->getDate() . " ";
     echo "<BR>";
   }
-  ksort($tmp);
-  //print_r($tmp);
   /*
-  foreach($tmp as $key => $val){
+  ksort($res);
+
+  for($i=0;$i<count($res);$i++){
+    $val = $res[$i];
     echo $val->getId() . " ";
     echo $val->getName() . " ";
     echo $val->getRegular() ." ";
     echo $val->getKinds() ." ";
-    echo $val->getFrequency() . " ";
-    echo $val->getComment() . " ";
-    echo $val->getTimestamp() . " ";
+    //echo $val->getFrequency() . " ";
+    //echo $val->getComment() . " ";
+    //echo $val->getTimestamp() . " ";
+    echo $val->getTimes() . " ";
+    echo $val->getTermStart() . " ";
+    echo $val->getDate() . " ";
     echo "<BR>";
     }*/
+  /*
+  for($i=0;$i<count($medAry);$i++){
+    $val = $medAry[$i];
+    echo $val->getId() . " ";
+    echo $val->getName() . " ";
+    echo $val->getRegular() ." ";
+    echo $val->getKinds() ." ";
+    //echo $val->getFrequency() . " ";
+    //echo $val->getComment() . " ";
+    //echo $val->getTimestamp() . " ";
+    echo $val->getTimes() . " ";
+    echo $val->getTermStart() . " ";
+    echo $val->getDate() . " ";
+    echo "<BR>";
+    }*/
+ 
 }
 
 // サーバー切断

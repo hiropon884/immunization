@@ -8,8 +8,10 @@ class medicine
   private $frequency;
   private $comment;
   private $timestamp;
-  private $head = array();
-  private $tail = array();
+  private $times;
+  private $term_start;
+  private $date;
+  //private $term_end;
 
   function setId($key){
     $this->id = $key;
@@ -32,10 +34,17 @@ class medicine
   function setTimestamp($key){
     $this->timestamp = $key;
   }
-  
-  function pushTerm($start, $end){
-    $this->head[] = $start;
-    $this->tail[] = $end;
+  function setTimes($key){
+    $this->times = $key;
+  }
+  function setTermStart($key){
+    $this->term_start = $key;
+  }
+  //function setTermEnd($key){
+  //  $this->term_end;
+  //}
+  function setDate($key){
+    $this->date = $key;
   }
   function getId(){
     return $this->id;
@@ -58,12 +67,17 @@ class medicine
   function getTimestamp(){
     return $this->timestamp;
   }
-  
-  function getHeadPeriod($time){
-    return $this->head[$time];
+  function getTimes(){
+    return $this->times;
   }
-  function getTailPeriod($time){
-    return $this->tail[$time];
+  function getTermStart(){
+    return $this->term_start;
+  }
+  //function getTermEnd(){
+  //  return $this->term_end;
+  //}
+  function getDate(){
+    return $this->date;
   }
 }
 
