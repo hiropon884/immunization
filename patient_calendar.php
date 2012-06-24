@@ -119,7 +119,7 @@ if (!$result) {
   }
 
   ksort($medAry);
-
+  /*
   foreach($medAry as $key => $val){
     //echo $key . "<P>";
     //print_r($val);
@@ -134,7 +134,41 @@ if (!$result) {
     echo $val->getTermStart() . " ";
     echo $val->getDate() . " ";
     echo "<BR>";
+    }*/
+
+  echo "<form action=\"appointment.php\" method=\"POST\">";
+
+  $table_name = array("予防接種名","定期/任意","回数","接種時期");
+  $attrs = array('width' => '600');
+  $table = new HTML_Table($attrs);
+  $table->setAutoGrow(true);
+
+  for($i=0;$i<count($table_name);$i++){
+    $table->setCellContents(0, $i, $table_name[$i]);
   }
+  $nc = 0;
+  foreach($medAry as $key => $val){
+    $table->setCellContents($nc+1, 0, $val->getName());
+    $table->setCellContents($nc+1, 1, $val->getRegular());
+    $table->setCellContents($nc+1, 2, $val->getTimes());
+    $table->setCellContents($nc+1, 3, $val->getDate());
+    $str = "<button type=\"submit\" name=\"medicine_params\" value=\"" . $val->getId() . "_" . $val->getTimes() . "\">予約</button>";
+    $table->setCellContents($nc+1, 4, $str); 
+    $nc++;
+    if($nc%2 == 1){
+      $hrAttrs = array('bgcolor' => 'WhiteSmoke');
+    } else {
+      $hrAttrs = array('bgcolor' => 'GhostWhite');
+    }
+    $table->setRowAttributes($nc, $hrAttrs, true);
+  }
+  //array('bgcolor' => 'lightgray');
+  //$table->altRowAttributes(0, null, $altRow);
+  
+  $hrAttrs = array('bgcolor' => 'silver');
+  $table->setRowAttributes(0, $hrAttrs, true);
+  echo $table->toHtml();
+  echo "</form>";
   /*
   ksort($res);
 

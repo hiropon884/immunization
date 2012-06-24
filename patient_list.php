@@ -47,15 +47,15 @@ if (!$link) {
   mysql_set_charset('utf8');
 
   //// クエリーの実行
-  //$str = "SELECT * FROM user WHERE userid = '$userid' AND passwd = '$passwd'";
+  $str = "SELECT * FROM person WHERE clinic_id = '$clinic_id';";
   //print $str."<P>";
-  $result = mysql_query("SELECT * FROM person");
+  $result = mysql_query($str);
   if (!$result) {
      die('クエリーが失敗しました。'.mysql_error());
   } else {  
     ////// 結果の行数を得る
     $num_rows = mysql_num_rows($result);
-    echo 'total user numbera = ' . $num_rows . '<p>';
+    echo 'total user number = ' . $num_rows . '<p>';
     
     $tableData = array();
     
@@ -95,10 +95,16 @@ for ($nr = 0; $nr < count($tableData); $nr++) {
     }
     $tbl_cnt++;
   }
+  if($nr%2 == 1){
+    $hrAttrs = array('bgcolor' => 'WhiteSmoke');
+  } else {
+    $hrAttrs = array('bgcolor' => 'GhostWhite');
+  }
+  $table->setRowAttributes($nr+1, $hrAttrs, true);
 }
 
-$altRow = array('bgcolor' => 'lightgray');
-$table->altRowAttributes(1, null, $altRow);
+//$altRow = array('bgcolor' => 'lightgray');
+//$table->altRowAttributes(1, null, $altRow);
 
 for ($cnt = 0; $cnt < count($patient_caption); $cnt++) {
   $table->setHeaderContents(0, $cnt+1, $patient_caption[$cnt]);

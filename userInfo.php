@@ -70,9 +70,15 @@ for ($nr = 0; $nr < count($tableData); $nr++) {
       $table->setCellContents($nr+1, $i, htmlspecialchars($tableData[$nr][$i], ENT_QUOTES, 'UTF-8'));
     }
   }
+  if($nr%2 == 1){
+    $hrAttrs = array('bgcolor' => 'WhiteSmoke');
+  } else {
+    $hrAttrs = array('bgcolor' => 'GhostWhite');
+  }
+  $table->setRowAttributes($nr+1, $hrAttrs, true);
 }
-$altRow = array('bgcolor' => 'lightgray');
-$table->altRowAttributes(1, null, $altRow);
+//$altRow = array('bgcolor' => 'lightgray');
+//$table->altRowAttributes(1, null, $altRow);
 
 for ($cnt = 0; $cnt < count($clinic_caption); $cnt++) {
   $table->setHeaderContents(0, $cnt, $clinic_caption[$cnt]);
@@ -80,7 +86,7 @@ for ($cnt = 0; $cnt < count($clinic_caption); $cnt++) {
 
 $hrAttrs = array('bgcolor' => 'silver');
 $table->setRowAttributes(0, $hrAttrs, true);
-$table->setColAttributes(0, $hrAttrs);
+//$table->setColAttributes(0, $hrAttrs);
 
 echo $table->toHtml();
 

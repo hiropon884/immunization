@@ -114,8 +114,9 @@ echo "生年月日："  . $birthday ."<P>";
 ?>
 <a href="appointment.php">個別予防接種予約</a><BR>
 <a href="patient_calendar.php">予防接種カレンダー</a><BR>
-<a href="patient_past.php">接種履歴詳細</a><BR>
-<a href="patient_booklist.php">予約一覧表示</a><P>
+<a href="patient_booklist.php">予約一覧表示</a><BR>
+<a href="patient_past.php">接種履歴詳細</a><P>
+
 推奨予防接種（2ヶ月分）<P>
 
 <H3>カレンダーから予防接種予約を入れる</H3>

@@ -388,9 +388,15 @@ for ($nc = 0; $nc < count($patient_attribute); $nc++) {
     $str = htmlspecialchars($patient_vars[$nc], ENT_QUOTES, "UTF-8");
   }
   $table->setCellContents($nc+1, 1, $str);
+  if($nc%2 == 1){
+    $hrAttrs = array('bgcolor' => 'WhiteSmoke');
+  } else {
+    $hrAttrs = array('bgcolor' => 'GhostWhite');
+  }
+  $table->setRowAttributes($nc+1, $hrAttrs, true);
 }
-$altRow = array('bgcolor' => 'lightgray');
-$table->altRowAttributes(0, null, $altRow);
+//$altRow = array('bgcolor' => 'lightgray');
+//$table->altRowAttributes(0, null, $altRow);
 
 $hrAttrs = array('bgcolor' => 'silver');
 $table->setRowAttributes(0, $hrAttrs, true);

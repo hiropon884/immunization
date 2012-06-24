@@ -1,7 +1,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<title>Patient Top Page </title>
+<script type="text/javascript" src="js/jkl-calendar_IF.js" charset="Shift-JIS"></script>
+<title>Appointment Page </title>
 </head>
 <body>
 
@@ -29,7 +30,8 @@ $clinic_id = $_SESSION["clinic_id"];
 $person_id = $_SESSION["person_id"];
 $birthday = $_SESSION["birthday"];
 $person_name = $_SESSION["person_name"];
-
+$params = $_POST["medicine_params"];
+echo "params = " . $params . "<BR>";
 echo "clinic_id = " . $clinic_id . "<BR>";
 echo "person_id = " . $person_id . "<BR>";
 echo "person_name = " . $person_name . "<BR>";
@@ -59,9 +61,16 @@ for ($cnt = 1; $cnt < count($book_attrs); $cnt++) {
   //$clinic_vars[$cnt] = "null";
   if(isset($_POST[$book_attrs[$cnt]])){
     $book_vars[$cnt] = $_POST[$book_attrs[$cnt]];
-    echo $book_vars[$cnt]."<BR>";
+    //echo $book_vars[$cnt]."<BR>";
   }
 }
+
+if(isset($_POST["medicine_params"])){
+  $tmp_vars = explode("_", $_POST["medicine_params"]);
+  $book_vars[1] = $tmp_vars[0];
+  $book_vars[2] = $tmp_vars[1];
+}
+
 $cmd = "";
 if (isset($_POST["cmd"])) {
   echo $_POST["cmd"]."<P>";
@@ -319,7 +328,12 @@ for ($nc = 0; $nc < count($book_attrs); $nc++) {
       if($nc == 0){
 	$disable = "disabled = \"disabled\"";
       }
-      $str = $err . "<input type='text' name='" . $book_attrs[$nc] . "' value='" . $book_vars[$nc] . "' size=50 " . $disable ."/>";
+      if($nc != 3){
+	$str = $err . "<input type='text' name='" . $book_attrs[$nc] . "' value='" . $book_vars[$nc] . "' size=50 " . $disable ."/>";
+      } else {
+	$str = $err . "<input type='text' name='" . $book_attrs[$nc] . "' value='" . $book_vars[$nc] . "' size=50 " . $disable ." onClick=\"cal1.write();\" onChange=\"cal1.getFormValue(); cal1.hide();\"/><div id=\"calid\"></div>";
+	//$str = $err . "<input type='text' name='" . $book_attrs[$nc] . "' value='" . $book_vars[$nc] . "' size=50 " . $disable ."/>";
+      }
     } else if($verify == true && $_POST["verify"]){
       // クエリー実行
       $str = htmlspecialchars($book_vars[$nc], ENT_QUOTES, "UTF-8") ."<input type='hidden' name='" . $book_attrs[$nc] . "' value='" . $book_vars[$nc] . "' />";
@@ -349,25 +363,31 @@ for ($nc = 0; $nc < count($book_attrs); $nc++) {
 	$str .= "</select>";
       }
     } else if($nc == 5){
-       if($verify == true){
+      if($verify == true){
 	
 	$str = $state_name[$book_vars[$nc]]."<input type='hidden' name='" . $book_attrs[$nc] . "' value='" . $book_vars[$nc] . "' />";
       } else {
-	 $str = "<select name=\"state\">";
-	 for ($j = 0; $j < count($state_name); $j++) {
-	   $selected = "";
-	   if($j == $book_vars[$nc]){
-	     $selected = " selected";
-	   }
-	   $str .= "<option value=\"".$j."\"".$selected.">".$state_name[$j]."</option>";
-	 }
-       }
+	$str = "<select name=\"state\">";
+	for ($j = 0; $j < count($state_name); $j++) {
+	  $selected = "";
+	  if($j == $book_vars[$nc]){
+	    $selected = " selected";
+	  }
+	  $str .= "<option value=\"".$j."\"".$selected.">".$state_name[$j]."</option>";
+	}
+      }
     }
   }
   $table->setCellContents($nc+1, 1, $str);
+  if($nc%2 == 1){
+    $hrAttrs = array('bgcolor' => 'WhiteSmoke');
+  } else {
+    $hrAttrs = array('bgcolor' => 'GhostWhite');
+  }
+  $table->setRowAttributes($nc+1, $hrAttrs, true);
 }
-$altRow = array('bgcolor' => 'lightgray');
-$table->altRowAttributes(0, null, $altRow);
+//$altRow = array('bgcolor' => 'lightgray');
+//$table->altRowAttributes(0, null, $altRow);
 
 $hrAttrs = array('bgcolor' => 'silver');
 $table->setRowAttributes(0, $hrAttrs, true);
@@ -378,12 +398,17 @@ if($cmd != "none"){
   }
 }
 
-echo "<form action=\"appointment.php\" method=\"POST\">";
+echo "<form id=\"formid\" action=\"appointment.php\" method=\"POST\">";
 echo $table->toHtml();
 echo "<P>";
 if($verify == false){
-  echo "<input type=\"radio\" name=\"cmd\" value=\"none\" checked=\"checked\">None";
-  echo "<input type=\"radio\" name=\"cmd\" value=\"add\" >新規登録";
+  if(isset($_POST["medicine_params"])){
+    echo "<input type=\"radio\" name=\"cmd\" value=\"none\">None";
+    echo "<input type=\"radio\" name=\"cmd\" value=\"add\" checked=\"checked\" >新規登録";
+  } else {
+    echo "<input type=\"radio\" name=\"cmd\" value=\"none\" checked=\"checked\">None";
+    echo "<input type=\"radio\" name=\"cmd\" value=\"add\" >新規登録";
+  }
   echo "<input type=\"radio\" name=\"cmd\" value=\"update\" >更新";
   echo "<input type=\"radio\" name=\"cmd\" value=\"delete\" >削除
 ";
@@ -410,12 +435,18 @@ echo "</form>";
 <P>
 <a href="patient_top.php">Back to Person Top Page</a><P>
 </form>
+<script><!--
+  var cal1 = new JKL.Calendar("calid","formid","day");
+--></script>
 </body>
 </html>
 
 <?php
 function checkInput($vars, $min, $max, $err){
   for ($cnt = 1; $cnt < count($vars); $cnt++) {
+    if($cnt == 4){//lot number
+      continue;
+    }
     if($min[$cnt] > mb_strlen($vars[$cnt])){
       //echo "under<P>";
       $err[$cnt] = "under_flow";
