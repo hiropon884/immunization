@@ -70,6 +70,13 @@ if(isset($_POST["medicine_params"])){
   $book_vars[1] = $tmp_vars[0];
   $book_vars[2] = $tmp_vars[1];
 }
+if(isset($_POST["book_params"])){
+  $tmp_vars = explode("_", $_POST["book_params"]);
+  $book_vars[1] = $tmp_vars[0];
+  $book_vars[2] = $tmp_vars[1];
+  $book_vars[3] = $tmp_vars[2];
+  $book_vars[4] = $tmp_vars[3];
+}
 
 $cmd = "";
 if (isset($_POST["cmd"])) {
@@ -124,6 +131,10 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
 	}
       }
       //print_r($table_error);
+      if(bookVerify($book_vars, $book_attrs)){
+	$verify = false;
+	print "すでに同じ種類の薬で同じ接種回の予約が存在するため予約できません。";
+      }
       if($verify == true){
 	print "以下の内容で登録します。内容が合っているか今一度確認してください。";
       }
@@ -403,13 +414,21 @@ echo $table->toHtml();
 echo "<P>";
 if($verify == false){
   if(isset($_POST["medicine_params"])){
-    echo "<input type=\"radio\" name=\"cmd\" value=\"none\">None";
-    echo "<input type=\"radio\" name=\"cmd\" value=\"add\" checked=\"checked\" >新規登録";
+    $none_check = null;
+    $add_check = "checked=\"checked\"";
+    $update_check = null;
+  } else if(isset($_POST["book_params"])){
+    $none_check = null;
+    $add_check = null;
+    $update_check = "checked=\"checked\"";
   } else {
-    echo "<input type=\"radio\" name=\"cmd\" value=\"none\" checked=\"checked\">None";
-    echo "<input type=\"radio\" name=\"cmd\" value=\"add\" >新規登録";
+    $none_check = "checked=\"checked\"";
+    $add_check = null;
+    $update_check = null;
   }
-  echo "<input type=\"radio\" name=\"cmd\" value=\"update\" >更新";
+  echo "<input type=\"radio\" name=\"cmd\" value=\"none\" ". $none_check .">None";
+  echo "<input type=\"radio\" name=\"cmd\" value=\"add\" ". $add_check ." >新規登録";
+  echo "<input type=\"radio\" name=\"cmd\" value=\"update\" ". $update_check ." >更新";
   echo "<input type=\"radio\" name=\"cmd\" value=\"delete\" >削除
 ";
 }

@@ -12,6 +12,7 @@ class medicine
   private $term_start;
   private $date;
   //private $term_end;
+  private $lot;
 
   function setId($key){
     $this->id = $key;
@@ -46,6 +47,10 @@ class medicine
   function setDate($key){
     $this->date = $key;
   }
+  function setLot($key){
+    $this->lot = $key;
+  }
+
   function getId(){
     return $this->id;
   }
@@ -79,6 +84,10 @@ class medicine
   function getDate(){
     return $this->date;
   }
+  function getLot(){
+    return $this->lot;
+  }
+  
 }
 
 ?>

@@ -84,7 +84,7 @@ print('<p>immunization データベースを選択しました。</p>');
 mysql_set_charset('utf8');
 
 //// クエリーの実行
-$str = "SELECT body.immunization_id, body.immunization_name, book.day, book.number as times, book.lot_num FROM immunization as body INNER JOIN book ON book.immunization_id = body.immunization_id WHERE book.person_id = " . $person_id . " AND book.state = 1;";
+$str = "SELECT body.immunization_id, body.immunization_name, book.day, book.number as times, book.lot_num FROM immunization as body INNER JOIN book ON book.immunization_id = body.immunization_id WHERE book.person_id = " . $person_id . " AND book.state = 0;";
 
 //print $str."<P>";
 $result = mysql_query($str);
@@ -111,7 +111,7 @@ if (!$result) {
  
   echo "<form action=\"appointment.php\" method=\"POST\">";
 
-  $table_name = array("接種日","予防接種名","回目","ロットナンバー");
+  $table_name = array("接種予定日","予防接種名","回目","ロットナンバー");
   $attrs = array('width' => '600');
   $table = new HTML_Table($attrs);
   $table->setAutoGrow(true);
@@ -125,8 +125,8 @@ if (!$result) {
     $table->setCellContents($nc+1, 1, $val->getName());
     $table->setCellContents($nc+1, 2, $val->getTimes());
     $table->setCellContents($nc+1, 3, $val->getLot());
-    //$str = "<button type=\"submit\" name=\"book_params\" value=\"" . $val->getId() . "_" . $val->getTimes() . "_" . $val->getDate() . "_" . $val->getLot() . "\">変更</button>";
-    //$table->setCellContents($nc+1, 4, $str); 
+    $str = "<button type=\"submit\" name=\"book_params\" value=\"" . $val->getId() . "_" . $val->getTimes() . "_" . $val->getDate() . "_" . $val->getLot() . "\">変更</button>";
+    $table->setCellContents($nc+1, 4, $str); 
     $nc++;
     if($nc%2 == 1){
       $hrAttrs = array('bgcolor' => 'WhiteSmoke');
