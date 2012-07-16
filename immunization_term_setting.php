@@ -12,8 +12,8 @@ if (!isset($_SESSION["clinic_id"])) {
 }
 
 $clinic_id = $_SESSION["clinic_id"];
-$term_attr = array("clinic_id","immunization_id","times","term_start","term_end");
-$term_caption = array("病院ID","予防接種名","回数","推奨接種時期","接種時期");
+$term_attr = array("clinic_id","is_enable","immunization_id","times","term_start","term_end");
+$term_caption = array("病院ID","有効","予防接種名","回数","推奨接種時期","接種時期");
 $term_vars = array();
 $medicine = array("インフルエンザb型(ヒブ)","肺炎球菌(PCV7)",
 		  "B型肝炎(HBV)","ロタウイルス","三種混合(DPT)",
@@ -75,26 +75,38 @@ if($_POST["update"]){
   $result = mysql_query($str);
   $num_rows = mysql_num_rows($result);
   $nc = 0;
+  $enable_flag = 0;
   while ($row = mysql_fetch_assoc($result)) {
     //echo $row['immunization_id'] . "_" . $row['frequency'] . "<P>";
     //$str = $row['immunization_id'] . "_" . $row['frequency'];
     //echo $_POST[$str];
     for($i=1;$i<=$row['frequency'];$i++){
       $id = $row['immunization_id'];
-      $key = $id . "_" . $i;
+      $key = "start_". $id . "_" . $i;
+      $enable = "enable_" . $id . "_" . $i;
       $val = $_POST[$key];
+      if($i == 1){
+	if(isset($_POST[$enable])){
+	  $enable_flag = 1;
+	} else {
+	  $enable_flag = 0;
+	}
+      }
+      //var_dump($enable_flag);
       //echo "test (" . $tableItem[$nc][3] . ", " . $val . ", " . $key . ")<P>";
-      if($tableItem[$nc][3] != $val){
+      if($tableItem[$nc][4] != $val || $tableItem[$nc][1] != $enable_flag){
 	
 	$str = "UPDATE immunization_term SET term_start = '" . $val
-	  . "' WHERE clinic_id = '" . $clinic_id . "' AND immunization_id = '"
-	  . $tableItem[$nc][1]. "' AND times = '" . $tableItem[$nc][2] . "';";
-	echo $str . "<P>";
-	$result = mysql_query($str);
-	if (!$result) {
+	  . "', is_enable = " . $enable_flag 
+          . " WHERE clinic_id = '" . $clinic_id . "' AND immunization_id = '"
+	  . $tableItem[$nc][2]. "' AND times = '" . $tableItem[$nc][3] . "';";
+	//echo $str . "<P>";
+	$result_update = mysql_query($str);
+	if (!$result_update) {
 	  print "クエリーが失敗しました。".mysql_error()."<P>";
 	}
-	$tableItem[$nc][3] = $val;
+	$tableItem[$nc][4] = $val;
+	$tableItem[$nc][1] = $enable_flag;
       }
       $nc++;
     }
@@ -115,21 +127,32 @@ for ($j = 0; $j < count($tableItem); $j++) {
   $item = $tableItem[$j];
   $last = count($term_attr)-1;
   for($i=1;$i<$last;$i++){
-    if($i == 1){
+    if($term_attr[$i] == "immunization_id"){
       if($item[$i+1] == 1){
-	$table->setCellContents($j+1, $i-1, $medicine[$item[$i]-1]);
+	$str = $medicine[$item[$i]-1];
+	$table->setCellContents($j+1, $i-1, $str);
       }
-    } else if($i == $last-1){
-      $id = $item[1] . "_" . $item[2];
-      $str = "生後 <input type='text' name='" . $id . "' value='" . $item[$i] . "' size=5 /> ヶ月目";
+    } else if($term_attr[$i] == "term_start"){
+     
+      $str = "生後 <input type='text' name='start_" . $id . "' value='" . $item[$i] . "' size=5 /> ヶ月目";
       $table->setCellContents($j+1, $i-1, $str);
-    } else if($i == 2){
+    } else if($term_attr[$i] == "times"){
       $str = $item[$i] . "回目";
       $table->setCellContents($j+1, $i-1, $str);
+    } else if($term_attr[$i] == "is_enable"){
+      $id = $item[2] . "_" . $item[3];
+	if($item[$i+2] == 1){
+	  $checkbox = "";
+	  if($item[$i] == "1"){
+	    $checkbox = "checked";
+	  }
+	  $str = "<input type='checkbox' name='enable_" . $id . "' value='" . $item[$i] . "' " . $checkbox . "/>";
+	  $table->setCellContents($j+1, $i-1, $str);
+	}
     } else {
       $table->setCellContents($j+1, $i-1, $item[$i]);
     }
-    if(($item[1])%2 == 1){
+    if(($item[2])%2 == 1){
       $hrAttrs = array('bgcolor' => 'WhiteSmoke');
     } else {
       $hrAttrs = array('bgcolor' => 'GhostWhite');

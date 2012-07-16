@@ -132,7 +132,7 @@ if ($_POST["submit"] ||$_POST["verify"] ) {
 	    $num_rows = mysql_num_rows($result);
 	    echo 'total user number = ' . $num_rows . '<p>';
 	    
-	    $term_attr = array("clinic_id","immunization_id","times","term_start","term_end");
+	    $term_attr = array("clinic_id","immunization_id","times","term_start","term_end", "is_enable");
 	    $tableItem = array();
 	    while ($row = mysql_fetch_assoc($result)) {
 	      $item = array();

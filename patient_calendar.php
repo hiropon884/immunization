@@ -84,7 +84,7 @@ print('<p>immunization データベースを選択しました。</p>');
 mysql_set_charset('utf8');
 
 //// クエリーの実行
-$str = "SELECT body.immunization_id, body.immunization_name, body.regular, body.kinds, term.times, term.term_start FROM immunization as body INNER JOIN immunization_term as term ON body.immunization_id = term.immunization_id WHERE term.clinic_id = '" . $clinic_id . "';";
+$str = "SELECT body.immunization_id, body.immunization_name, body.regular, body.kinds, term.times, term.term_start FROM immunization as body INNER JOIN immunization_term as term ON body.immunization_id = term.immunization_id WHERE term.clinic_id = '" . $clinic_id . "' AND term.is_enable = 1;";
 //print $str."<P>";
 $result = mysql_query($str);
 if (!$result) {
