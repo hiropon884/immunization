@@ -1,0 +1,15 @@
+body {text-align:center;}
+#common_header {background-color:#ccaa00;}
+#wrap { width:780px; text-align:left; margin:0 auto; background-color:#ccddaa;} 
+#header { margin:0 5px; background-color:#00cc00;} 
+#inner { margin:0 10px; background-color:#9999cc;}  
+#mainWrap { margin:0 1px; width:540px; float:right; background-color:#ccffcc;}  
+#sideWrap { margin:0 1px; width:200px; float:left; background-color:#ffcc66;}
+#footer { margin:0 5px; background-color:#555566;}
+#common_footer {background-color:#ccaa99;}
+.clear { clear:both; }  
+.clear hr { display:none; }
+table {width: 100%; background-color:#ffff99; table-layout: fixed;}
+.mytable1 { width: 80px; }
+.mytable2 { width: auto; }
+.mytable3 { width: 50px; }

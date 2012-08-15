@@ -1,0 +1,10 @@
+body {text-align:center;}
+#wrap { width:780px; text-align:left; margin:0 auto; background-color:#ccddaa;}
+#header { margin:0 0px; background-color:#333333; color:#eeeeee;} 
+#innerTop { margin:0 5px; background-color:#9999cc;}
+#head { margin:0 5px; background-color:#999900;}
+#mainWrap { margin:0 5px; width:540px; float:right; background-color:#ccffcc;}
+#sideWrap { margin:0 5px; width:210px; float:left; background-color:#ffcc66;}
+#tail { margin:0 5px; background-color:#aa00cc;}
+#footer { margin:0 0px; text-align:right; background-color:#333333; color:#eeeeee;}
+

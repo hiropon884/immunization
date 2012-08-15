@@ -1,7 +1,16 @@
 <?php
+ini_set('display_errors', 1);
+require_once("class/MySmarty.class.php");
+
+$smarty = new MySmarty();
+
 session_start(); 
-$clinic_id = $_POST["clinic_id"];
-$passwd = $_POST["password"];
+if(isset($_POST["clinic_id"])){
+  $clinic_id = $_POST["clinic_id"];
+}
+if(isset($_POST["password"])){
+  $passwd = $_POST["password"];
+}
 
 // エラーメッセージを格納する変数を初期化
 $error_message = "";
@@ -68,16 +77,7 @@ if (isset($_POST["login"])) {
     }
     //}
 }
-?>
 
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<title>ログイン画面</title>
-</head>
-<body>
-
-<?php
 print 'session_id='.session_id().'<P>';
 
 if ($error_message) {
@@ -86,14 +86,6 @@ if ($error_message) {
 if ($error_db) {
   print $error_db;
 }
-?>
 
-<form action="login.php" method="POST">
-病院ID：<input type="text" name="clinic_id" value="" /><br />
-パスワード：<input type="password" name="password" value="" /><br />
-<input type="submit" name="login" value="ログイン" />
-</form>
-<P>
-<a href="admin.php">Back to Admin Page</a><P>
-</body>
-</html>
+$smarty->display("tpl/login.tpl");
+?>
