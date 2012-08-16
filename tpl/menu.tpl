@@ -1,33 +1,38 @@
-<div id="menu">
+ï»¿<div id="menu">
+	{if $menu_state == 0}
 	<div id="admin_menu">
-		ŠÇ—ŽÒƒƒjƒ…[
+		ç®¡ç†è€…ãƒ¡ãƒ‹ãƒ¥ãƒ¼
 		<UI>
-			<LI>ƒ†[ƒU[“o˜^iV‹K“o˜^AXVAíœAŒŸõj
-			<LI>ƒ†[ƒU[ˆê——•\Ž¦
+			<LI><a href="registrationView.php">ãƒ¦ãƒ¼ã‚¶ãƒ¼ç™»éŒ²ãƒ»æ›´æ–°ãƒ»å‰Šé™¤</a>
+			<LI><a href="userInfo.php">ãƒ¦ãƒ¼ã‚¶ãƒ¼ä¸€è¦§ã®è¡¨ç¤º</a>
 		</UI>
 	</div>
-
+	{elseif $menu_state == 1}
 	<div id="user_menu">
-		ƒ†[ƒU[ƒƒjƒ…[
+		æ‚£è€…ãƒ¡ãƒ‹ãƒ¥ãƒ¼<P>
 		<UI>
-			<LI>ƒJƒXƒ^ƒ}[“o˜^iV‹K“o˜^AXVAíœAŒŸõj
-			<LI>ƒJƒXƒ^ƒ}[ˆê——•\Ž¦
-			<LI>—\–hÚŽíÚŽíÝ’è
-			<LI>“Œv•\Ž¦
+			<LI><a href="patient_reg.php">æ‚£è€…ã®ç™»éŒ²ãƒ»æ¤œç´¢</a><BR>
+			<LI><a href="patient_list.php">æ‚£è€…ä¸€è¦§</a><BR>
+		</UI><P>
+		ç—…é™¢å´ãƒ¡ãƒ‹ãƒ¥ãƒ¼<P>
+		<UI>
+			<LI><a href="statistical.php">çµ±è¨ˆãƒ‡ãƒ¼ã‚¿è¡¨ç¤º</a><br>
+			<LI><a href="immunization_term_setting.php">æŽ¥ç¨®è¨­å®š</a><br>
 		</UI>
 	</div>
-
+	{elseif $menu_state == 2}
 	<div id="customer">
-		ƒJƒXƒ^ƒ}[ƒƒjƒ…[
+		ã‚«ã‚¹ã‚¿ãƒžãƒ¼ãƒ¡ãƒ‹ãƒ¥ãƒ¼
 		<UI>
-			<LI>Žè“®—\–ñ“o˜^iV‹K“o˜^AXVAíœj
-			<LI>ÛŽæ‰Â”\—\–hÚŽíƒŠƒXƒg
-			<LI>—\–ñƒŠƒXƒg
-			<LI>Š®—¹ƒŠƒXƒg
+			<LI>æ‰‹å‹•äºˆç´„ç™»éŒ²ï¼ˆæ–°è¦ç™»éŒ²ã€æ›´æ–°ã€å‰Šé™¤ï¼‰
+			<LI>æ‘‚å–å¯èƒ½äºˆé˜²æŽ¥ç¨®ãƒªã‚¹ãƒˆ
+			<LI>äºˆç´„ãƒªã‚¹ãƒˆ
+			<LI>å®Œäº†ãƒªã‚¹ãƒˆ
 		</UI>
 	<div>
-	
-ƒƒOƒAƒEƒg<P>
+	{/if}
+	<P>
+<a href="logout.php">ãƒ­ã‚°ã‚¢ã‚¦ãƒˆ</a><P>
 
-–â‚¢‡‚í‚¹<BR>
+å•ã„åˆã‚ã›<BR>
 </div>

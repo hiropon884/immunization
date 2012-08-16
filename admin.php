@@ -1,12 +1,12 @@
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<title>Admin</title>
-</head>
-<body>
-<a href="registrationView.php">ユーザー登録・更新・削除</a><P>
-<a href="userInfo.php">ユーザー一覧の表示</a><P>
-<a href="index.html">Back to TOP</a><P>
+<?php
+ini_set('display_errors', 1);
+require_once("class/MySmarty.class.php");
 
-</body>
-</html>
+$smarty = new MySmarty(true);
+
+session_start(); 
+
+//$smarty->session_check();
+$smarty->assign("menu_state","0");
+$smarty->display("tpl/userTop.tpl");
+?>
