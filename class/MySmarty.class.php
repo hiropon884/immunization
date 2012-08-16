@@ -2,6 +2,9 @@
 //require_once("DB.php");
 define('SMARTY_DIR', '/var/www/share/lib/Smarty-3.1.11/libs/');
 define('DOC_ROOT','/var/www/');
+define('DATABASE_TYPE_IMMUNIZATION','immunization');
+define('SUCCESS','1');
+
 require_once(SMARTY_DIR . "Smarty.class.php");
 
 class MySmarty extends Smarty{
