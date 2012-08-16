@@ -1,21 +1,21 @@
-<?php
+ï»¿<?php
 
-require_once(MAIN_DIR . '/class/DataBase.php');
+require_once('DataBase.php');
 
  final class DBAccessor extends DataBase{
  	/**
-	 * ƒVƒ“ƒOƒ‹ƒgƒ“
+	 * ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³
 	 */
 	private static $singleton;
 
 	/**
-	 * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	 */
 	public function __construct(){
 		parent::__construct(DATABASE_TYPE_IMMUNIZATION);
 	}
 	/**
-	 * ƒVƒ“ƒOƒ‹ƒgƒ“‚ğæ“¾‚·‚éB
+	 * ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚’å–å¾—ã™ã‚‹ã€‚
 	 *
 	 * @return object BlogSlave
 	 */
@@ -31,8 +31,8 @@ require_once(MAIN_DIR . '/class/DataBase.php');
 	}
                 
         /**
-         * ƒ[ƒ‹ƒAƒhƒŒƒX‚©‚çƒ†[ƒU[ID‚ğæ“¾‚·‚é
-         * @param string $mail ƒ[ƒ‹ƒAƒhƒŒƒX
+         * ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ã‹ã‚‰ãƒ¦ãƒ¼ã‚¶ãƒ¼IDã‚’å–å¾—ã™ã‚‹
+         * @param string $mail ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
          */
         public function getUserIdbyMailAddress($mail){
             $rows = array();
@@ -48,11 +48,11 @@ QUERY;
             return $rows[0];
         }
      /*
-      * ƒ†[ƒU[‚h‚c‚ÆƒpƒXƒ[ƒh‚ğÆ‡‚µ‚Äƒ†[ƒU[‚©‚Ç‚¤‚©”»•Ê‚·‚é
+      * ãƒ¦ãƒ¼ã‚¶ãƒ¼ï¼©ï¼¤ã¨ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’ç…§åˆã—ã¦ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‹ã©ã†ã‹åˆ¤åˆ¥ã™ã‚‹
       */   
 	public function verifyUserAccount($id, $pw){
 		$sql = <<<SQL
-SELECT id
+SELECT clinic_id
 FROM clinic
 WHERE clinic_id = :clinic_id
 AND passwd = :passwd
@@ -63,12 +63,15 @@ SQL;
 		$this->bindValueWithType($sth, ':passwd', $pw);
 		$rows = $this->prepared_query($sth);
 		
-		if($this->rowCount() == 1){
-			//³‹Kƒ†[ƒU[
-		} elseif($this->rowCount() > 1){
-			//ƒVƒXƒeƒ€ƒGƒ‰[
+		if($this->rowCount() == SUCCESS){
+			//æ­£è¦ãƒ¦ãƒ¼ã‚¶ãƒ¼
+			return SUCCESS;
+		} elseif($this->rowCount() == FAILURE){
+			//èªè¨¼å¤±æ•—
+			return FAILURE;
 		} else {
-			//ƒ†[ƒU[‚Å‚Í‚È‚¢
+			//ã‚·ã‚¹ãƒ†ãƒ ã‚¨ãƒ©ãƒ¼
+			return 0;
 		}
 	}
  }

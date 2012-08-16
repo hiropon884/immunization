@@ -1,6 +1,6 @@
 <?php
 
-require_once(MAIN_DIR . 'SQLException.php');
+require_once('SQLException.php');
 
 /**
  * DataBase のアクセスラッパークラス
@@ -51,19 +51,14 @@ class DataBase
 		$this->dbname = $dbname;
 		$hostname = "localhost";
 		
-		$cht_database_name;
 		$database_username = "db_user";
 		$database_password = "123456";
-		
-        $this->dbname = $dbname;
-		$hostname = "localhost";
 		
 		$dsn = 'mysql:dbname=' . $dbname . ';host=' . $hostname;
 		$this->pdo = new PDO($dsn, $database_username, $database_password);
 		$this->pdo->query('set names utf8');
 		$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		return;
-		*/
 	}
 	
 	/**
