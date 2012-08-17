@@ -1,5 +1,7 @@
 <?php
-//require_once("DB.php");
+
+ini_set('display_errors', 1);
+
 define('SMARTY_DIR', '/var/www/share/lib/Smarty-3.1.11/libs/');
 define('DOC_ROOT','/var/www/');
 define('DATABASE_TYPE_IMMUNIZATION','immunization');

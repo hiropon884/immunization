@@ -1,5 +1,5 @@
 <?php
-ini_set('display_errors', 1);
+
 require_once("class/MySmarty.class.php");
 
 $smarty = new MySmarty(true);
@@ -34,24 +34,10 @@ if (isset($_POST["login"])) {
 		$msg = "ユーザ名もしくはパスワードが違っています。";
     }
     
-    // サーバー切断
-    //$close_flag = mysql_close($link);
-    
-    //if ($close_flag){
-     // print('<p>切断に成功しました。</p>');
-    //}
-    //}
 }
 $smarty->assign("state",$msg);
 
 print 'session_id='.session_id().'<P>';
-
-//if ($error_message) {
-//  print '<font color="red">'.$error_message.'</font>';
-//}
-//if ($error_db) {
-//  print $error_db;
-//}
 
 $smarty->display("tpl/login.tpl");
 ?>

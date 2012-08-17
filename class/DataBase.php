@@ -53,11 +53,15 @@ class DataBase
 		
 		$database_username = "db_user";
 		$database_password = "123456";
-		
-		$dsn = 'mysql:dbname=' . $dbname . ';host=' . $hostname;
-		$this->pdo = new PDO($dsn, $database_username, $database_password);
-		$this->pdo->query('set names utf8');
-		$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		try{
+                    $dsn = 'mysql:dbname=' . $dbname . ';host=' . $hostname;
+                    $this->pdo = new PDO($dsn, $database_username, $database_password);
+                    $this->pdo->query('set names utf8');
+                    $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                } catch (PDOException $e) {
+                    print "エラー!: " . $e->getMessage() . "<br/>";
+                    die();
+                }
 		return;
 	}
 	

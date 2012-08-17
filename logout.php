@@ -1,4 +1,12 @@
 <?php
+
+require_once("class/MySmarty.class.php");
+
+$smarty = new MySmarty(true);
+//明示的にDBの接続を閉じる
+$db = $smarty->getDb();
+$db = null;
+
 // セッションの初期化
 // session_name("something")を使用している場合は特にこれを忘れないように!
 session_start();
@@ -18,20 +26,6 @@ if (ini_get("session.use_cookies")) {
 
 // 最終的に、セッションを破壊する
 session_destroy();
-?>
 
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<meta http-equiv="Refresh" content="5; URL=index.html">
-<title>test page2</title>
-</head>
-<body>
-<?php
-print 'session_id='.session_id().'<P>';
+$smarty->display("tpl/logout.tpl");
 ?>
-セッション切断<BR>
-ログアウトしました<P>
-<a href="login.php">ログイン</a>画面へ5秒後自動的に遷移します<br>
-</body>
-</html>
