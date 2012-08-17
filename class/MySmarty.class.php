@@ -14,6 +14,7 @@ require_once("DBAccessor.php");
 class MySmarty extends Smarty{
   private $mysql;
   private $is_db;
+  private $params;
   public function __construct($db_flag = false){
     parent::__construct();
 
@@ -26,6 +27,7 @@ class MySmarty extends Smarty{
 	if($this->is_db){
 		$this->mysql = DBAccessor::getInstance();
 	}
+        $this-setParams();
   }
    
   public function __destruct(){
@@ -42,6 +44,20 @@ class MySmarty extends Smarty{
 		header("Location: {$no_login_url}");
 		exit;
 	}
+  }
+  public function setPrams(){
+      $this->params = array();
+      
+      //病院パラメータを設定
+      $ary = array();
+      $ary['attribute'] = array("clinic_id", "passwd", "name", "yomi", "zipcode",
+			  "location1", "location2", "tel", "email");
+      $ary['caption'] = array("病院ID", "パスワード", "病院名", "病院名（読み）",
+		       "郵便番号", "住所１", "住所２",
+		       "電話番号", "メールアドレス", );
+      $ary['vars_min'] = array(1, 8, 1, 1, 8, 1, 1, 12, 1);
+      $ary['vars_max'] = array(10, 20, 50, 100, 8, 255, 255, 13, 50);
+      $this->params['clinic'] = $ary;
   }
 }
 ?>

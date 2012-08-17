@@ -24,10 +24,10 @@
 	<div id="customer">
 		カスタマーメニュー
 		<UI>
-			<LI>手動予約登録（新規登録、更新、削除）
-			<LI>摂取可能予防接種リスト
-			<LI>予約リスト
-			<LI>完了リスト
+			<LI><a href="appointment.php">個別予防接種予約</a><BR>
+                        <LI><a href="patient_calendar.php">予防接種カレンダー</a><BR>
+                        <LI><a href="patient_booklist.php">予約一覧表示</a><BR>
+                        <LI><a href="patient_past.php">接種履歴詳細</a><P>
 		</UI>
 	<div>
 	{/if}

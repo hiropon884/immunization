@@ -8,42 +8,14 @@
 <?php
 
 require_once 'HTML/Table.php';
+require_once("class/MySmarty.class.php");
+
+$smarty = new MySmarty(true);
 
 session_start(); 
+
 // ログイン済みかどうかの変数チェックを行う
-if (!isset($_SESSION["clinic_id"])) {
-
-  // 変数に値がセットされていない場合は不正な処理と判断し、ログイン画面へリダイレクトさせる
-  $no_login_url = "http://{$_SERVER["HTTP_HOST"]}/immunization/login.php";
-  header("Location: {$no_login_url}");
-  exit;
-}
-/*
-$patient_attribute = array("person_id", "clinic_id", "patient_id", 
-			  "family_name", "family_name_yomi", "personal_name", 
-			  "personal_name_yomi", "birthday", "zipcode",
-			   "location1", "location2", "tel", "email");
-$patient_caption = array("人ID","病院ID", "患者ID", "氏", "氏（読み）","名", 
-			"名（読み）", "生年月日", "郵便番号", "住所１", "住所２",
-			"電話番号", "メールアドレス");
-$patient_vars_min = array(1, 1, 1, 1, 1, 1, 1, 10, 8, 1, 1, 12 ,1);
-$patient_vars_max = array(10, 10, 20, 10, 20, 10, 20, 10, 8, 255, 255, 13, 50);
-
-$patient_vars = array();
-$table_error = array();
-$verify = false;
-*/
-/*
-$posted_item_num=0;
-for ($cnt = 0; $cnt < count($patient_attribute); $cnt++) {
-  $table_error[] = false;
-  //$patient_vars[$cnt] = "null";
-  if(isset($_POST[$patient_attribute[$cnt]])){
-    $posted_item_num++;
-    $patient_vars[$cnt] = $_POST[$patient_attribute[$cnt]];
-  }
-  }*/
-//print_r($patient_vars);
+$smarty->session_check();
 
 $clinic_id = $_SESSION["clinic_id"];
 if(!isset($_POST["person_id"])) {
@@ -51,10 +23,12 @@ if(!isset($_POST["person_id"])) {
 } else {
   $person_id = $_POST["person_id"];
 }
-$birthday = "";
-echo "clinic_id = " . $clinic_id . "<P>";
-echo "person_id = " . $person_id . "<P>";
-
+//$birthday = "";
+$smarty->assign("clinic_id", $clinic_id);
+$smarty->assign("person_id", $person_id);
+//echo "clinic_id = " . $clinic_id . "<P>";
+//echo "person_id = " . $person_id . "<P>";
+/*
 //SQLサーバーへ接続
 //$link = mysql_connect('localhost', 'root', 'admin');
 $link = mysql_connect('localhost', 'db_user', '123456');
@@ -100,28 +74,28 @@ if (!$result) {
   
   //$tableData[] = $tableItem;
   
+}*/
+
+$db = $smarty->getDb();
+$ret = $db->getUserInfo($person_id);
+$msg = "OK";
+if($ret == FAILURE){
+    $msg = "NG";
+} else {
+    $person_name = $ret['family_name'] . " " . $ret['personal_name'];
+    $_SESSION["person_id"] = $ret['person_id'];
+    $_SESSION["birthday"] = $ret['birthday'];
+    $_SESSION["person_name"] = $person_name;
+    $smarty->assign("person_id", $ret['person_id']);
+    $smarty->assign("birthday", $ret['birthday']);
+    $smarty->assign("person_name", $person_name);
+    $smarty->assign("menu_state", $ret['2']);
 }
-
-// サーバー切断
-$close_flag = mysql_close($link);
-
-$_SESSION["person_id"] = $person_id;
-$_SESSION["birthday"] = $birthday;
-$person_name = $family_name . " " . $personal_name;
-$_SESSION["person_name"] = $person_name;
-echo "氏名：" . $person_name . "<BR>";
-echo "生年月日："  . $birthday ."<P>";
+$smarty->assign("person_state", $msg);
 ?>
-<a href="appointment.php">個別予防接種予約</a><BR>
-<a href="patient_calendar.php">予防接種カレンダー</a><BR>
-<a href="patient_booklist.php">予約一覧表示</a><BR>
-<a href="patient_past.php">接種履歴詳細</a><P>
 
-推奨予防接種（2ヶ月分）<P>
-
-<H3>カレンダーから予防接種予約を入れる</H3>
 <?php
-
+/*
 $attrs = array('width' => '400');
 $table = new HTML_Table($attrs);
 
@@ -229,10 +203,5 @@ function make_calendar($year, $month, $day, $flag){
   $html .= "</tr>\n";
   $html .= "</table>\n";
   return $html;
-}
+}*/
 ?>
-<P>
-<a href="userTop.php">Back to User Top Page</a><P>
-</form>
-</body>
-</html>

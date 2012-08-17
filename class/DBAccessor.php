@@ -30,23 +30,6 @@ require_once('DataBase.php');
 		return parent::query($sql);
 	}
                 
-        /**
-         * メールアドレスからユーザーIDを取得する
-         * @param string $mail メールアドレス
-         */
-        public function getUserIdbyMailAddress($mail){
-            $rows = array();
-            $sql = <<<QUERY
-            SELECT  id
-            FROM    user
-            WHERE   mail = :mail
-QUERY;
-
-            $sth = $this->prepare($sql);
-            $this->bindValueWithType($sth, ':mail', $mail);
-            $rows = $this->prepared_query($sth);
-            return $rows[0];
-        }
      /*
       * ユーザーＩＤとパスワードを照合してユーザーかどうか判別する
       */   
@@ -74,4 +57,20 @@ SQL;
 			return 0;
 		}
 	}
+        public function getUserInfo($person_id){
+            $sql = <<<SQL
+SELECT * 
+FROM person 
+WHERE person_id = :person_id
+SQL;
+            $sth = $this->prepare($sql);
+            $this->bindValueWithType($sth, ':person_id', $person_id);
+            $rows = $this->prepared_query($sth);
+            
+            if($this->rowCount() == SUCCESS){
+                return $rows[0];
+            } else {
+                return FAILURE;
+            }
+        }
  }
