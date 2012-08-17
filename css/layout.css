@@ -1,0 +1,67 @@
+/*
+ * Layout styles
+ */
+div.layout {
+	background: #fff;
+}
+div.layoutHeader {
+	border-bottom: 2px solid #ccc;
+}
+table.layoutHeader {
+	width: 100%;
+}
+td.layoutLogo {
+	width: 200px;
+}
+div.layoutLogo {
+}
+div.layoutHorizontalNavi {
+	padding: 12px;
+	text-align: right;
+}
+div.layoutYouAreHere {
+	padding: 4px;
+	padding-left: 12px;
+	padding-right: 12px;
+	background: #079;
+}
+table.layoutMain {
+	width: 100%;
+}
+td.layoutMainLeft {
+	width: 184px;
+	border-right: 2px solid #ccc;
+	background: #ddc;
+	padding-top: 8px;
+}
+div.layoutVerticalNavi {
+	padding: 8px;
+}
+td.layoutMainCenter {
+}
+div.layoutMainContent {
+	padding: 16px;
+}
+div.layoutPager {
+	margin-top: 16px;
+	padding: 8px;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+}
+td.layoutMainRight {
+	border-left: 2px solid #ccc;
+	padding: 8px;
+}
+div.layoutFooter {
+	padding: 4px;
+	text-align: right;
+	font-size: small;
+	font-weight: bold;
+        border-top: 2px solid #ccc;
+        color: #fff;
+        background: #079;
+}
+div.layoutFooter > a{
+	font-size: small;
+	color: #fff;
+}

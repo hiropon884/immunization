@@ -1,9 +1,9 @@
 ﻿<?php
-
 require_once('DataBase.php');
 
- final class DBAccessor extends DataBase{
- 	/**
+final class DBAccessor extends DataBase {
+
+	/**
 	 * シングルトン
 	 */
 	private static $singleton;
@@ -11,9 +11,10 @@ require_once('DataBase.php');
 	/**
 	 * コンストラクタ
 	 */
-	public function __construct(){
+	public function __construct() {
 		parent::__construct(DATABASE_TYPE_IMMUNIZATION);
 	}
+
 	/**
 	 * シングルトンを取得する。
 	 *
@@ -29,11 +30,12 @@ require_once('DataBase.php');
 	public function query($sql) {
 		return parent::query($sql);
 	}
-                
-     /*
-      * ユーザーＩＤとパスワードを照合してユーザーかどうか判別する
-      */   
-	public function verifyUserAccount($id, $pw){
+
+	/*
+	 * ユーザーＩＤとパスワードを照合してユーザーかどうか判別する
+	 */
+
+	public function verifyUserAccount($id, $pw) {
 		$sql = <<<SQL
 SELECT clinic_id
 FROM clinic
@@ -45,11 +47,11 @@ SQL;
 		$this->bindValueWithType($sth, ':clinic_id', $id);
 		$this->bindValueWithType($sth, ':passwd', $pw);
 		$rows = $this->prepared_query($sth);
-		
-		if($this->rowCount() == SUCCESS){
+
+		if ($this->rowCount() == SUCCESS) {
 			//正規ユーザー
 			return SUCCESS;
-		} elseif($this->rowCount() == FAILURE){
+		} elseif ($this->rowCount() == FAILURE) {
 			//認証失敗
 			return FAILURE;
 		} else {
@@ -57,20 +59,22 @@ SQL;
 			return 0;
 		}
 	}
-        public function getUserInfo($person_id){
-            $sql = <<<SQL
+
+	public function getUserInfo($person_id) {
+		$sql = <<<SQL
 SELECT * 
 FROM person 
 WHERE person_id = :person_id
 SQL;
-            $sth = $this->prepare($sql);
-            $this->bindValueWithType($sth, ':person_id', $person_id);
-            $rows = $this->prepared_query($sth);
-            
-            if($this->rowCount() == SUCCESS){
-                return $rows[0];
-            } else {
-                return FAILURE;
-            }
-        }
- }
+		$sth = $this->prepare($sql);
+		$this->bindValueWithType($sth, ':person_id', $person_id);
+		$rows = $this->prepared_query($sth);
+
+		if ($this->rowCount() == SUCCESS) {
+			return $rows[0];
+		} else {
+			return FAILURE;
+		}
+	}
+
+}

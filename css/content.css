@@ -1,0 +1,118 @@
+/*
+ * content sets
+ */
+
+h1 ,h2, h3 {
+margin-top: 0;
+}
+h1 {
+border-bottom: 1px solid #ccc;
+padding: 4px;
+}
+h2, h3, h4, h5 {
+border-bottom: 1px solid #ccc;
+padding: 4px;
+margin-top: 2em;
+}
+
+h2 {}
+img.h1, img.h2 {
+margin-right: 4px;
+}
+
+h3 {}
+img.h3 {
+margin-right: 4px;
+}
+
+h6.ex_heading {
+padding: 4px;
+margin-top: 2em;
+color: #fff;
+background: #079;
+margin-bottom: 0;
+margin-top: 0;
+font-size: small;
+}
+
+p {
+	text-indent: 1em;
+}
+
+dfn {
+	font-weight: bold;
+	font-style: normal;
+}
+
+/*
+div.trancelate, div.trancelate * {
+font-size: small;
+color: #363;
+margin-bottom: 1em;
+}
+*/
+
+div.ex_code, div.summary {
+padding: 8px;
+background: #eee;
+border: 1px solid #ccc;
+margin-bottom: 1em;
+}
+
+.note {
+font-size: small;
+}
+
+div.note {
+padding: 8px;
+background: #ddc;
+border: 1px solid #ccc;
+margin-bottom: 1em;
+}
+
+h6.summary {
+padding: 4px;
+margin-top: 2em;
+background: #ddc;
+margin-bottom: 0;
+margin-top: 0;
+font-size: small;
+border: 1px solid #ccc;
+border-bottom: 0;
+}
+
+span.note {
+color: #090;
+}
+
+/* - list - */
+li.dir, li.file {
+	list-style-type: none;
+}
+dt {
+font-weight: bold;
+margin-left: 4px;
+}
+dd {
+margin-bottom: 1em;
+}
+
+/* - table - */
+table.cell {
+        border-collapse: collapse;
+        border: 1px solid #ccc;
+        background: #ccc;
+        margin-top: 8px;
+        margin-bottom: 8px;
+}
+th.cell, td.cell {
+        border: 1px solid #ccc;
+        padding: 4px;
+}
+th.cell {
+        background: #ddc;
+}
+td.cell {
+        background: #eee;
+}
+

@@ -1,4 +1,4 @@
-{include file="tpl/common_header.tpl" title="login form"}
+{include file="tpl/common_header.tpl" title="login form" refresh="false"}
 {if $state != ""}
 	<font color="red">{$state}</font>
 {/if}
@@ -7,6 +7,6 @@
 	パスワード：<input type="password" name="password" value="" /><br />
 	<input type="submit" name="login" value="ログイン" />
 </form>
-<P>
-	
+<P />
+
 {include file="tpl/common_footer.tpl"}

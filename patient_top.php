@@ -89,9 +89,10 @@ if($ret == FAILURE){
     $smarty->assign("person_id", $ret['person_id']);
     $smarty->assign("birthday", $ret['birthday']);
     $smarty->assign("person_name", $person_name);
-    $smarty->assign("menu_state", $ret['2']);
+    $smarty->assign("menu_state", "2");
 }
 $smarty->assign("person_state", $msg);
+$smarty->display("tpl/patient_top.tpl");
 ?>
 
 <?php

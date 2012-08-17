@@ -1,0 +1,143 @@
+/*
+ * navi styles
+ */
+
+/*
+ * naviLogo
+ */
+img.naviLogo {
+}
+
+/*
+ * naviHorizontalNavi
+ */
+span.naviHorizontalNavi {
+	font-size: small;
+}
+a.naviHorizontalNavi {
+	font-size: small;
+}
+
+/*
+ * naviHorizontalNavi
+ */
+span.naviHorizontalNavi2 {
+	font-size: small;
+	color: #fff;
+}
+a.naviHorizontalNavi2 {
+	font-size: small;
+	color: #fff;
+}
+
+/*
+ * naviVerticalNavi
+ */
+a.naviVerticalNavi {
+	font-size: small;
+}
+
+div.naviVerticalNavi_1 > a {
+	font-size: medium;
+}
+div.naviVerticalNavi_1 {
+	margin-top: 8px;
+	font-weight: bold;
+}
+div.naviVerticalNavi_2,
+div.naviVerticalNavi_3,
+div.naviVerticalNavi_4,
+div.naviVerticalNavi_5,
+div.naviVerticalNavi_6
+{
+	padding-top: 4px;
+	font-size: small;
+	font-weight: bold;
+}
+div.naviVerticalNavi_2 {
+	padding-left: 1em;
+}
+div.naviVerticalNavi_3 {
+	padding-left: 2em;
+}
+div.naviVerticalNavi_4 {
+	padding-left: 3em;
+}
+div.naviVerticalNavi_5 {
+	padding-left: 4em;
+}
+div.naviVerticalNavi_6 {
+	padding-left: 5em;
+}
+img.naviVerticalNavi_1,
+img.naviVerticalNavi_2,
+img.naviVerticalNavi_3,
+img.naviVerticalNavi_4,
+img.naviVerticalNavi_5,
+img.naviVerticalNavi_6 {
+	margin-right: 4px;
+}
+
+/*
+ * naviYouAreHere
+ */
+span.naviYouAreHere{
+	color: #fff;
+	font-weight: bold;
+	font-size: small;
+}
+a.naviYouAreHere{
+	color: #fff;
+	font-size: small;
+}
+img.naviYouAreHere{
+	padding-left: 2px;
+	padding-right: 6px;
+}
+
+/*
+ * naviPager
+ */
+table.naviPager {
+	width: 100%;
+}
+/* Previous */
+td.naviPagerPrevious {
+	width: 33%;
+	font-size: small;
+	font-weight: bold;
+}
+a.naviPagerPrevious {
+	font-size: small;
+	font-weight: bold;
+}
+img.naviPagerPrevious {
+	margin-right: 4px;
+}
+/* Top */
+td.naviPagerTop {
+	text-align: center;
+	font-size: small;
+	font-weight: bold;
+}
+a.naviPagerTop {
+	font-size: small;
+	font-weight: bold;
+}
+img.naviPagerTop {
+	margin-right: 4px;
+}
+/* Next */
+td.naviPagerNext {
+	width: 33%;
+	text-align: right;
+	font-size: small;
+	font-weight: bold;
+}
+a.naviPagerNext {
+	font-size: small;
+	font-weight: bold;
+}
+img.naviPagerNext {
+	margin-left: 4px;
+}
