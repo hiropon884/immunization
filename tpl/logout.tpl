@@ -1,5 +1,8 @@
-{include file="tpl/common_header.tpl" title="login form" refresh="true"}
-
-ログアウトしました<P/>
-<a href="login.php">ログイン</a>画面へ5秒後自動的に遷移します<br>
-{include file="tpl/common_footer.tpl"}
+{include file="tpl/parts/common_header.tpl" title="logout" refresh="true"}
+<div class="layoutMainContent">
+	<center>
+		ログアウトしました<P/>
+		<a href="index.php">サイトトップ</a>へ5秒後自動的に遷移します<br>
+	</center>
+</div>
+{include file="tpl/parts/common_footer.tpl"}

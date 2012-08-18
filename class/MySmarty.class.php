@@ -66,7 +66,9 @@ class MySmarty extends Smarty {
 		$this->params['clinic'] = $ary;
 		 
 	}
-
+	public function getParams(){
+		return $this->params;
+	}
 }
 
 ?>

@@ -77,4 +77,13 @@ SQL;
 		}
 	}
 
+	public function getClinic(){
+		$sql = <<<SQL
+SELECT * FROM clinic
+SQL;
+		$sth = $this->prepare($sql);
+		$rows = $this->prepared_query($sth);
+		
+		return $rows;
+	}
 }

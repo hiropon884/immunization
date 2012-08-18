@@ -8,5 +8,6 @@ session_start();
 
 $smarty->session_check();
 $smarty->assign("menu_state", "1");
-$smarty->display("tpl/userTop.tpl");
+$smarty->assign("menu_flag", "1");
+$smarty->display("tpl/user_top.tpl");
 ?>
