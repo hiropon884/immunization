@@ -9,5 +9,7 @@ session_start();
 //$smarty->session_check();
 $smarty->assign("menu_state","0");
 $smarty->assign("menu_flag","1");
-$smarty->display("tpl/user_top.tpl");
+$smarty->assign("mode","admin");
+$smarty->assign("location","none");
+$smarty->display("tpl/admin.tpl");
 ?>

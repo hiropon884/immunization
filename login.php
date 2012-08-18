@@ -36,6 +36,8 @@ if (isset($_POST["login"])) {
 }
 $smarty->assign("state", $msg);
 $smarty->assign("menu_flag", "0");
+$smarty->assign("mode","none");
+$smarty->assign("location","none");
 
 //print 'session_id=' . session_id() . '<P>';
 

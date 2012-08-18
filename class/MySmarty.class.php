@@ -10,6 +10,7 @@ define('FAILURE', '0');
 
 require_once(SMARTY_DIR . "Smarty.class.php");
 require_once("DBAccessor.php");
+require_once 'HTML/Table.php';
 
 class MySmarty extends Smarty {
 
@@ -64,7 +65,16 @@ class MySmarty extends Smarty {
 		$ary['vars_min'] = array(1, 8, 1, 1, 8, 1, 1, 12, 1);
 		$ary['vars_max'] = array(10, 20, 50, 100, 8, 255, 255, 13, 50);
 		$this->params['clinic'] = $ary;
-		 
+		
+		$ary = array();
+		$ary['attribute'] = array("person_id", "clinic_id", "patient_id", 
+			  "family_name", "family_name_yomi", "personal_name", 
+			  "personal_name_yomi", "birthday", "zipcode",
+			   "location1", "location2", "tel", "email");
+		$ary['caption'] = array("人ID","病院ID", "患者ID", "氏", "氏（読み）","名", 
+			"名（読み）", "生年月日", "郵便番号", "住所１", "住所２",
+			"電話番号", "メールアドレス");
+		$this->params['patient'] = $ary;
 	}
 	public function getParams(){
 		return $this->params;

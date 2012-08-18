@@ -1,7 +1,6 @@
 <?php
 
 require_once("class/MySmarty.class.php");
-require_once 'HTML/Table.php';
 
 $smarty = new MySmarty(true);
 
@@ -10,6 +9,8 @@ $smarty = new MySmarty(true);
 
 $smarty->assign("menu_state", "0");
 $smarty->assign("menu_flag", "1");
+$smarty->assign("mode","admin");
+$smarty->assign("location","user_list");
 $params = $smarty->getParams();
 
 $clinic_caption = $params['clinic']['caption'];

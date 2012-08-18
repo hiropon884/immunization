@@ -1,13 +1,5 @@
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<title>Patient Top Page </title>
-</head>
-<body>
-
 <?php
 
-require_once 'HTML/Table.php';
 require_once("class/MySmarty.class.php");
 
 $smarty = new MySmarty(true);
@@ -92,6 +84,9 @@ if($ret == FAILURE){
     $smarty->assign("menu_state", "2");
 }
 $smarty->assign("person_state", $msg);
+$smarty->assign("menu_flag", "2");
+$smarty->assign("mode","patient");
+$smarty->assign("location","none");
 $smarty->display("tpl/patient_top.tpl");
 ?>
 

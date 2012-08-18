@@ -79,9 +79,24 @@ SQL;
 
 	public function getClinic(){
 		$sql = <<<SQL
-SELECT * FROM clinic
+SELECT * 
+FROM clinic
 SQL;
 		$sth = $this->prepare($sql);
+		$rows = $this->prepared_query($sth);
+		
+		return $rows;
+	}
+	
+	public function getPatinetList($clinic_id){
+		$sql = <<<SQL
+SELECT * 
+FROM person 
+WHERE clinic_id = :clinic_id
+SQL;
+
+		$sth = $this->prepare($sql);
+		$this->bindValueWithType($sth, ':clinic_id', $clinic_id);
 		$rows = $this->prepared_query($sth);
 		
 		return $rows;
