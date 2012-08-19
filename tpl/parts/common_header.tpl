@@ -7,7 +7,7 @@
 			<div class="layoutMain">
 				<table class="layoutMain" cellspacing="0" cellpadding="0">
 					<tr>
-						{if $menu_flag}
+						{if $menu_is_available == "true"}
 							{include file="tpl/parts/menu.tpl"}
 						{/if}
 						<td valign="top" class="layoutMainCenter">

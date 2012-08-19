@@ -3,14 +3,13 @@
 require_once("class/MySmarty.class.php");
 
 $smarty = new MySmarty(true);
+$smarty->assign("menu_is_available", "true");
+$smarty->assign("mode", "clinic");
+$smarty->assign("location", "patient_list");
 
 session_start();
 $smarty->session_check();
 
-$smarty->assign("menu_state", "1");
-$smarty->assign("menu_flag", "1");
-$smarty->assign("mode", "clinic");
-$smarty->assign("location", "patient_list");
 $params = $smarty->getParams();
 
 $patient_caption = $params['patient']['caption'];
@@ -18,7 +17,13 @@ $patient_caption = $params['patient']['caption'];
 $clinic_id = $_SESSION["clinic_id"];
 
 $db = $smarty->getDb();
-$tableData = $db->getPatinetList($clinic_id);
+try {
+	$tableData = $db->getPatinetList($clinic_id);
+} catch (PDOException $e) {
+	echo $e->getMessage();
+	die;
+}
+
 // create html table with all user information
 $attrs = array('width' => '800');
 $table = new HTML_Table($attrs);

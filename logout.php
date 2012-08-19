@@ -3,6 +3,10 @@
 require_once("class/MySmarty.class.php");
 
 $smarty = new MySmarty(true);
+$smarty->assign("menu_is_available", "false");
+$smarty->assign("mode","none");
+$smarty->assign("location","none");
+
 //明示的にDBの接続を閉じる
 $db = $smarty->getDb();
 $db = null;
@@ -26,8 +30,6 @@ if (ini_get("session.use_cookies")) {
 
 // 最終的に、セッションを破壊する
 session_destroy();
-$smarty->assign("menu_flag", "0");
-$smarty->assign("mode","none");
-$smarty->assign("location","none");
+
 $smarty->display("tpl/logout.tpl");
 ?>

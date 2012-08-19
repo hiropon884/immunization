@@ -3,6 +3,9 @@
 require_once("class/MySmarty.class.php");
 
 $smarty = new MySmarty(true);
+$smarty->assign("menu_is_available", "false");
+$smarty->assign("mode", "none");
+$smarty->assign("location", "none");
 
 session_start();
 if (isset($_POST["clinic_id"])) {
@@ -18,10 +21,13 @@ $msg = "";
 // ログインボタンが押されたかを判定
 // 初めてのアクセスでは認証は行わずエラーメッセージは表示しないように
 if (isset($_POST["login"])) {
-
-	$db = $smarty->getDb();
-	$ret = $db->verifyUserAccount($clinic_id, $passwd);
-
+	try {
+		$db = $smarty->getDb();
+		$ret = $db->verifyUserAccount($clinic_id, $passwd);
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+		die;
+	}
 	if ($ret == SUCCESS) {
 		// ログインが成功した証をセッションに保存
 		$_SESSION["clinic_id"] = $_POST["clinic_id"];
@@ -35,9 +41,7 @@ if (isset($_POST["login"])) {
 	}
 }
 $smarty->assign("state", $msg);
-$smarty->assign("menu_flag", "0");
-$smarty->assign("mode","none");
-$smarty->assign("location","none");
+
 
 //print 'session_id=' . session_id() . '<P>';
 

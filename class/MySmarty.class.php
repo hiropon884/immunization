@@ -51,7 +51,7 @@ class MySmarty extends Smarty {
 		}
 	}
 
-	public function setParams() {
+	private function setParams() {
 		
 		$this->params = array();
 

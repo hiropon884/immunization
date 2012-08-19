@@ -2,7 +2,7 @@
 <div class="layoutMainContent">
 	<center>
 {if $state != ""}
-	<div class="errorMsg">aaaa{$state}</div>
+	<div class="errorMsg">{$state}</div>
 {/if}
 <form action="login.php" method="POST">
 	病院ID：<input type="text" name="clinic_id" value="" /><br />
