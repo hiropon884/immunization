@@ -10,12 +10,12 @@ $smarty = new MySmarty(true);
 $smarty->assign("menu_is_available", "true");
 $smarty->assign("mode", "admin");
 $smarty->assign("location", "user_list");
-$params = $smarty->getParams();
+$params = $smarty->getClinicParams();
 
 $clinic_caption = $params['clinic']['caption'];
 try {
 	$db = $smarty->getDb();
-	$tableData = $db->getClinic();
+	$tableData = $db->getClinicList();
 } catch (PDOException $e) {
 	echo $e->getMessage();
 	die;

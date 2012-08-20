@@ -10,7 +10,7 @@ $smarty->assign("location", "patient_list");
 session_start();
 $smarty->session_check();
 
-$params = $smarty->getParams();
+$params = $smarty->getPatientParams();
 
 $patient_caption = $params['patient']['caption'];
 

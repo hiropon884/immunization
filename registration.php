@@ -11,7 +11,7 @@ $smarty->assign("mode", "admin");
 $smarty->assign("location", "registration");
 
 $db = $smarty->getDb();
-$params = $smarty->getParams();
+$params = $smarty->getClinicParams();
 $clinic_attribute = $params['clinic']['attribute'];
 $clinic_caption = $params['clinic']['caption'];
 $clinic_vars_min = $params['clinic']['vars_min'];
@@ -39,18 +39,19 @@ if (isset($_POST["cmd"])) {
 } else {
 	$cmd = "none";
 }
-
+$posted_type = "";
 if (isset($_POST["submit"])) {
-	//echo "submit" . "<P>";
-}
-if (isset($_POST["verify"])) {
-	//echo "verify" . "<P>";
-}
-if (isset($_POST["reset"])) {
+    $posted_type = "submit";
+} else if (isset($_POST["verify"])) {
+    $posted_type = "verify";
+} else if (isset($_POST["reset"])) {
+     $posted_type = "reset";
 	//echo "reset" . "<P>";
 	for ($cnt = 0; $cnt < count($clinic_vars); $cnt++) {
 		$clinic_vars[$cnt] = null;
 	}
+} elseif (isset($_POST["cancel"])){
+    $posted_type = "cancel";
 }
 
 $msg = "";
@@ -62,11 +63,11 @@ $error_message = "";
 // ログインボタンが押されたかを判定
 // 初めてのアクセスでは認証は行わずエラーメッセージは表示しないように
 //if ($clinic_vars[0] != "null") {
-if (isset($_POST["submit"]) || isset($_POST["verify"])) {
+if ($posted_type == "submit" || $posted_type == "verify") {
 
 	//// 新規ユーザーの追加
 	if ($cmd == "add") {
-		if (isset($_POST["verify"])) {
+		if ($posted_type == "verify") {
 			$table_error = checkInput($clinic_vars, $clinic_vars_min, $clinic_vars_max, $table_error);
 			$verify = true;
 			for ($cnt = 0; $cnt < count($table_error); $cnt++) {
@@ -85,19 +86,21 @@ if (isset($_POST["submit"]) || isset($_POST["verify"])) {
 					die;
 				}
 			}
-		}
-		if (isset($_POST["submit"])) {
+		} else if ($posted_type == "submit") {
 			$verify = true;
 			try {
 				//echo "addNewClinic\n";
-				$ret = $db->addNewClinic($clinic_vars);
+				$ret = $db->insertClinicData($clinic_vars);
+                                if($ret != true){
+                                    $msg .= "<font color=\"red\">Registration Fail</font>: データ登録に失敗しました<P>";
+                                }
 			} catch (PDOException $e) {
 				echo $e->getMessage();
 				//echo "addNewClinic\n";
 				die;
 			}
 			//echo "addNewClinic\n";
-			$msg .= "<font color=\"red\">Success</font>: データを登録しました。<P>";
+			$msg .= "<font color=\"red\">Success</font>: データを登録しました<P>";
 			//$msg .= "clinic_id = " . $clinic_vars[0] . "<P>";
 			
 			//msg .= "Success: 接種期間データを登録開始。<P>";
@@ -106,7 +109,10 @@ if (isset($_POST["submit"]) || isset($_POST["verify"])) {
 				
 				foreach($default_term as $val){
 					$val['clinic_id'] = $clinic_vars[0];
-					$ret = $db->addImmunizationTerm($val);
+					$ret = $db->insertTermData($val);
+                                         if($ret != true){
+                                    $msg .= "<font color=\"red\">Default Term Registration Fail</font>: データ登録に失敗しました<P>";
+                                }
 				}
 			} catch (PDOException $e) {
 				echo $e->getMessage();
@@ -116,10 +122,10 @@ if (isset($_POST["submit"]) || isset($_POST["verify"])) {
 			$msg .= "Success: 接種期間データを登録完了<P>";
 		}
 	} else if ($cmd == "update") { // 既存ユーザーのデータ更新
-		if (isset($_POST["verify"])) {
+		if ($posted_type == "verify") {
 
-			if ($db->verifyUserID($clinic_vars[0]) == SUCCESS) {
-				if ($db->verifyUserAccount($clinic_vars[0], $clinic_vars[1]) == SUCCESS) {
+			if ($db->verifyClinicID($clinic_vars[0]) == SUCCESS) {
+				if ($db->verifyClinicIDwithPW($clinic_vars[0], $clinic_vars[1]) == SUCCESS) {
 
 					$table_error = checkInput($clinic_vars, $clinic_vars_min, $clinic_vars_max, $table_error);
 					$verify = true;
@@ -143,11 +149,13 @@ if (isset($_POST["submit"]) || isset($_POST["verify"])) {
 				//print "<font color=\"red\">ERROR: 指定されたIDをもつユーザーがいませんでした。</font>";
 				$verify = false;
 			}
-		}
-		if (isset($_POST["submit"])) {
+		} else 	if ($posted_type == "submit") {
 			$verify = true;
 			try{
-				$db->updateClinicData($clinic_vars);
+				$ret = $db->updateClinicData($clinic_vars);
+                                 if($ret != true){
+                                    $msg .= "<font color=\"red\">Update Fail</font>: データ更新に失敗しました<P>";
+                                }
 			} catch (PDOException $e) {
 				echo $e->getMessage();
 				die;
@@ -156,9 +164,9 @@ if (isset($_POST["submit"]) || isset($_POST["verify"])) {
 			$msg .= "<font color=\"red\">Success</font>: 以下のデータ更新しました。<P>";
 		}
 	} else if ($cmd == "delete") { // ユーザーデータの削除
-		if (isset($_POST["verify"])) {
-			if ($db->verifyUserID($clinic_vars[0]) == SUCCESS) {
-				if ($db->verifyUserAccount($clinic_vars[0], $clinic_vars[1]) == SUCCESS) {
+		if ($posted_type == "verify") {
+			if ($db->verifyClinicID($clinic_vars[0]) == SUCCESS) {
+				if ($db->verifyClinicIDwithPW($clinic_vars[0], $clinic_vars[1]) == SUCCESS) {
 					$verify = true;
 				} else {
 					//print "<font color=\"red\">ERROR: パスワードが一致しません。</font>";
@@ -174,11 +182,13 @@ if (isset($_POST["submit"]) || isset($_POST["verify"])) {
 				$msg .= "以下のデータを削除します。本当に削除しても良いか今一度確認してください。";
 				$clinic_vars = $db->getClinicData($clinic_vars);
 			}
-		}
-		if (isset($_POST["submit"])) {
+		} else 	if ($posted_type == "submit") {
 			$verify = true;
 			try{
-				$db->deleteClinicData($clinic_vars);
+				$ret = $db->deleteClinicData($clinic_vars);
+                                  if($ret != true){
+                                    $msg .= "<font color=\"red\">Delete Fail</font>: データ削除に失敗しました<P>";
+                                }
 			} catch (PDOException $e) {
 				echo $e->getMessage();
 				die;
@@ -187,9 +197,9 @@ if (isset($_POST["submit"]) || isset($_POST["verify"])) {
 			$msg .= "<font color=\"red\">Success</font>: 以下のデータを削除しました。<P>";
 		}
 	} else if ($cmd == "get") {
-		if (isset($_POST["verify"])) {
-			if ($db->verifyUserID($clinic_vars[0]) == SUCCESS) {
-				if ($db->verifyUserAccount($clinic_vars[0], $clinic_vars[1]) == SUCCESS) {
+		if ($posted_type == "verify") {
+			if ($db->verifyClinicID($clinic_vars[0]) == SUCCESS) {
+				if ($db->verifyClinicIDwithPW($clinic_vars[0], $clinic_vars[1]) == SUCCESS) {
 					$verify = true;
 				} else {
 					//print "<font color=\"red\">ERROR: パスワードが一致しません。</font>";
@@ -212,17 +222,6 @@ if (isset($_POST["submit"]) || isset($_POST["verify"])) {
 	
 }
 
-
-
-//print 'session_id=' . session_id() . '<P>';
-/*
-if ($error_message) {
-	print '<font color="red">' . $error_message . '</font>';
-}
-if ($error_db) {
-	print $error_db;
-}*/
-
 $attrs = array('width' => '600');
 $table = new HTML_Table($attrs);
 $table->setAutoGrow(true);
@@ -240,7 +239,7 @@ for ($nc = 0; $nc < count($clinic_attribute); $nc++) {
 		}
 
 		$str = $err . "<input type='text' name='" . $clinic_attribute[$nc] . "' value='" . $clinic_vars[$nc] . "' size=50 />";
-	} else if ($verify == true && isset($_POST["verify"])) {
+	} else if ($verify == true && $posted_type == "verify") {
 		// クエリー実行
 		$str = htmlspecialchars($clinic_vars[$nc], ENT_QUOTES, "UTF-8") . "<input type='hidden' name='" . $clinic_attribute[$nc] . "' value='" . $clinic_vars[$nc] . "' />";
 	} else {
@@ -273,7 +272,7 @@ if ($verify == true) {
 } else {
 	$smarty->assign("verify", "false");
 }
-if (isset($_POST["submit"])){
+if ($posted_type == "submit"){
 	$smarty->assign("is_submit", "true");
 } else {
 	$smarty->assign("is_submit", "false");
@@ -281,42 +280,8 @@ if (isset($_POST["submit"])){
 $smarty->assign("cmd",$cmd);
 $smarty->assign("msg",$msg);
 //echo $table->toHtml();
-//echo "<P>";
-/*
-if ($verify == false) {
-	echo "<input type=\"radio\" name=\"cmd\" value=\"none\" checked=\"checked\">None";
-	echo "<input type=\"radio\" name=\"cmd\" value=\"add\" >新規登録";
-	echo "<input type=\"radio\" name=\"cmd\" value=\"update\" >更新";
-	echo "<input type=\"radio\" name=\"cmd\" value=\"get\" >データ取得";
-	echo "<input type=\"radio\" name=\"cmd\" value=\"delete\" >削除
-";
-}
-echo "<P>";
-if ($_POST["submit"]) {
-	
-} else if ($verify == true) {
-	if ($cmd == "get") {
-		echo "<input type=\"submit\" name=\"cancel\" value=\"戻る\" />
-";
-	} else {
-		echo "<input type=\"hidden\" name=\"cmd\" value=\"" . $cmd . "\" />";
-		echo "<input type=\"submit\" name=\"submit\" value=\"実行\" />
-";
-		echo "<input type=\"submit\" name=\"cancel\" value=\"キャンセル\" />";
-	}
-} else {
-	echo "<input type=\"submit\" name=\"verify\" value=\"確認\" />";
-	echo "<input type=\"submit\" name=\"reset\" value=\"リセット\" />";
-}
-echo "</form>";
- * 
- */
 
 $smarty->display("tpl/registration.tpl");
-?>
-
-
-<?php
 
 function checkInput($vars, $min, $max, $err) {
 	for ($cnt = 1; $cnt < count($vars); $cnt++) {
@@ -328,78 +293,7 @@ function checkInput($vars, $min, $max, $err) {
 			$err[$cnt] = "over_flow";
 		}
 	}
-	//print_r($err);
 	return $err;
 }
-/*
-function inputCheck($id, $pwd) {
-	
-	  if($id == ""){
-	  print "<font color=\"red\">Error</font>: ユーザー名を入力してください<P>";
-	  return false;
-	  } else if($pwd == ""){
-	  print "<font color=\"red\">Error</font>: パスワードを入力してください。<P>";
-	  return false;
-	  } 
-	return true;
-}
-*/
-/*
-function clinic_idVerify($id) {
-	return false;
-}*/
-/*
-function userIdVerify($id) {
 
-	$result = mysql_query("SELECT * FROM clinic WHERE clinic_id = '$id'");
-	if (!$result) {
-		//die('クエリーが失敗しました。'.mysql_error());
-		print "クエリーが失敗しました。" . mysql_error() . "</P>";
-		return false;
-	} else {
-		$num_rows = mysql_num_rows($result);
-		if ($num_rows == 0) {
-			return false;
-		}
-	}
-
-	return true;
-}*/
-/*
-function passwordVerify($id, $pwd) {
-
-	$result = mysql_query("SELECT * FROM clinic WHERE clinic_id = '$id' AND passwd = '$pwd'");
-	if (!$result) {
-		print "クエリーが失敗しました。" . mysql_error() . "</P>";
-		return false;
-	} else {
-		$num_rows = mysql_num_rows($result);
-		if ($num_rows == 0) {
-			print "<font color=\"red\">Error</font>: パスワードが一致しません。<P>";
-			return false;
-		}
-	}
-
-	return true;
-}
-*/
-/*
-function getClinicData($id, $pwd, $attr) {
-	$result = mysql_query("SELECT * FROM clinic WHERE clinic_id = '$id' AND passwd = '$pwd'");
-	if (!$result) {
-		die('クエリーが失敗しました。' . mysql_error());
-	} else {
-		////// 結果の行数を得る
-		$num_rows = mysql_num_rows($result);
-		echo 'total user number = ' . $num_rows . '<p>';
-
-		while ($row = mysql_fetch_assoc($result)) {
-			$tableItem = array();
-			for ($cnt = 0; $cnt < count($attr); $cnt++) {
-				$tableItem[] = $row[$attr[$cnt]];
-			}
-		}
-	}
-	return $tableItem;
-}*/
 ?>
