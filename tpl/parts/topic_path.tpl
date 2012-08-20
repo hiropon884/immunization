@@ -6,7 +6,7 @@
 	{/if}
 	{if $mode == "admin"}
 		<img class="naviYouAreHere" src="img/youarehere.gif" alt="&#062;" />
-		<span class="naviYouAreHere"><a class="naviYouAreHere" href="http://localhost/immunization/admin.php">ユーザー管理</a></span>
+		<span class="naviYouAreHere"><a class="naviYouAreHere" href="http://localhost/immunization/pages/admin/admin.php">ユーザー管理</a></span>
 		{if $location == "registration"}	
 			<img class="naviYouAreHere" src="img/youarehere.gif" alt="&#062;" /><span class="naviYouAreHere">ユーザー管理</span>
 		{else if $location =="user_list"}
@@ -14,7 +14,7 @@
 		{/if}
 	{else if $mode == "clinic"}
 		<img class="naviYouAreHere" src="img/youarehere.gif" alt="&#062;" />
-		<span class="naviYouAreHere"><a class="naviYouAreHere" href="http://localhost/immunization/user_top.php">メニュー</a></span>
+		<span class="naviYouAreHere"><a class="naviYouAreHere" href="http://localhost/immunization/pages/user_top.php">メニュー</a></span>
 		{if $location == "patient_reg"}	
 			<img class="naviYouAreHere" src="img/youarehere.gif" alt="&#062;" /><span class="naviYouAreHere">患者データ管理</span>
 		{else if $location =="patient_list"}
@@ -26,7 +26,7 @@
 		{/if}
 	{else if $mode == "patient"}
 		<img class="naviYouAreHere" src="img/youarehere.gif" alt="&#062;" />
-		<span class="naviYouAreHere"><a class="naviYouAreHere" href="http://localhost/immunization/user_top.php">個人メニュー</a></span>
+		<span class="naviYouAreHere"><a class="naviYouAreHere" href="http://localhost/immunization/pages/patient_top.php">個人メニュー</a></span>
 		{if $location == "patient_reg"}	
 			<img class="naviYouAreHere" src="img/youarehere.gif" alt="&#062;" /><span class="naviYouAreHere">個別予防接種予約</span>
 		{else if $location =="patient_list"}

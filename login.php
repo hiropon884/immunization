@@ -34,7 +34,7 @@ if (isset($_POST["login"])) {
 
 		// 管理者専用画面へリダイレクト
 		//$login_url = "http://{$_SERVER["HTTP_HOST"]}/immunization/anq_result.php";
-		$login_url = "http://{$_SERVER["HTTP_HOST"]}/immunization/user_top.php";
+		$login_url = "http://{$_SERVER["HTTP_HOST"]}/immunization/pages/user_top.php";
 		header("Location: {$login_url}");
 	} else {
 		$msg = "ユーザ名もしくはパスワードが違っています。";
