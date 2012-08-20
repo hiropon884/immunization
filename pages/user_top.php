@@ -1,6 +1,6 @@
 <?php
 
-require_once("class/MySmarty.class.php");
+require_once("../class/MySmarty.class.php");
 
 $smarty = new MySmarty(true);
 
@@ -11,5 +11,5 @@ $smarty->session_check();
 $smarty->assign("menu_is_available", "true");
 $smarty->assign("mode","clinic");
 $smarty->assign("location","none");
-$smarty->display("tpl/user_top.tpl");
+$smarty->display(TPL_BASE."user_top.tpl");
 ?>

@@ -7,6 +7,11 @@ define('DOC_ROOT', '/var/www/');
 define('DATABASE_TYPE_IMMUNIZATION', 'immunization');
 define('SUCCESS', '1');
 define('FAILURE', '0');
+define('URL_BASE', 'http://localhost/immunization/');
+define('DIR_BASE', DOC_ROOT. 'immunization/');
+define('TPL_BASE', DIR_BASE . 'tpl/');
+define('IMG_BASE', URL_BASE . 'img/');
+define('CLASS_BASE', URL_BASE . 'class/');
 
 require_once(SMARTY_DIR . "Smarty.class.php");
 require_once("DBAccessor.php");
@@ -31,6 +36,10 @@ class MySmarty extends Smarty {
             $this->mysql = DBAccessor::getInstance();
         }
        // $this->setParams();
+		$this->assign('DIR', DIR_BASE);
+		$this->assign('TPL', TPL_BASE);
+		$this->assign('URL', URL_BASE);
+		$this->assign('IMG', IMG_BASE);
     }
 
     public function __destruct() {
@@ -81,7 +90,7 @@ class MySmarty extends Smarty {
      * 病院用のパラメータセットを取得する
      */
     public function getClinicParams() {
-        $params = array();
+		$ary = array();
         $ary['attribute'] = array("clinic_id", "passwd", "name", "yomi", "zipcode",
             "location1", "location2", "tel", "email");
         $ary['caption'] = array("病院ID", "パスワード", "病院名", "病院名（読み）",
@@ -89,15 +98,14 @@ class MySmarty extends Smarty {
             "電話番号", "メールアドレス",);
         $ary['vars_min'] = array(1, 8, 1, 1, 8, 1, 1, 12, 1);
         $ary['vars_max'] = array(10, 20, 50, 100, 8, 255, 255, 13, 50);
-        $params['clinic'] = $ary;
-        
-        return params;
+
+		return $ary;
     }
      /*
      * 患者用のパラメータセットを取得する
      */
      public function getPatientParams() {
-        $params = array();
+        $ary = array();
         $ary['attribute'] =  array("person_id", "clinic_id", "patient_id",
             "family_name", "family_name_yomi", "personal_name",
             "personal_name_yomi", "birthday", "zipcode",
@@ -107,11 +115,36 @@ class MySmarty extends Smarty {
             "電話番号", "メールアドレス");
         $ary['vars_min'] = array(1, 1, 1, 1, 1, 1, 1, 10, 8, 1, 1, 12, 1);
         $ary['vars_max'] = array(10, 10, 20, 10, 20, 10, 20, 10, 8, 255, 255, 13, 50);
-        $params['patient'] = $ary;
         
-        return params;
+        return $ary;
      }
 
+	 /*
+	  * 接種期間用のパラメータを取得する
+	  */
+	 public function getTermParams(){
+		 $ary = array();
+		 $ary['attribute'] = array("clinic_id","immunization_id","times","term_start","term_end","is_enable");
+		 $ary['caption'] = array("病院ID","予防接種名","回数","推奨接種時期","接種時期","有効");
+		 
+		 return $ary;
+	 }
+	 /*
+	  * 接種薬のパラメータを取得する
+	  */
+	 public function getMedicineName(){
+		 $ary = array();
+		 $ary['caption'] = array("インフルエンザb型(ヒブ)","肺炎球菌(PCV7)",
+		  "B型肝炎(HBV)","ロタウイルス","三種混合(DPT)",
+		  "BCG","ポリオ","麻しん、風しん(MR)","水痘",
+		  "おたふくかぜ", "日本脳炎", "インフルエンザ",
+		  "2種混合(DT)",
+		  "ヒトパピローマウイルス(HPV) - 2価ワクチン",
+		  "ヒトパピローマウイルス(HPV) - 4価ワクチン",
+		  "A型肝炎");
+		 
+		 return $ary;
+	 }
 }
 
 ?>

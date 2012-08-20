@@ -1,5 +1,5 @@
 <?php
-require_once("class/MySmarty.class.php");
+require_once("../../class/MySmarty.class.php");
 
 $smarty = new MySmarty(true);
 
@@ -11,7 +11,7 @@ $smarty->assign("mode", "admin");
 $smarty->assign("location", "registration");
 
 $db = $smarty->getDb();
-$params = $smarty->getClinicParams();
+$params['clinic'] = $smarty->getClinicParams();
 $clinic_attribute = $params['clinic']['attribute'];
 $clinic_caption = $params['clinic']['caption'];
 $clinic_vars_min = $params['clinic']['vars_min'];
@@ -281,7 +281,7 @@ $smarty->assign("cmd",$cmd);
 $smarty->assign("msg",$msg);
 //echo $table->toHtml();
 
-$smarty->display("tpl/registration.tpl");
+$smarty->display(TPL_BASE."registration.tpl");
 
 function checkInput($vars, $min, $max, $err) {
 	for ($cnt = 1; $cnt < count($vars); $cnt++) {

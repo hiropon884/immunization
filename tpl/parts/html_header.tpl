@@ -5,5 +5,5 @@
 	{if $refresh == "true"}
 		<meta http-equiv="Refresh" content="5; URL=index.php">
 	{/if}
-	<link rel=stylesheet type="text/css" href="css/style.css" />
+	<link rel=stylesheet type="text/css" href="{$URL}css/style.css" />
 </head>

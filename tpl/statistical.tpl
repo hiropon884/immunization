@@ -1,4 +1,4 @@
-{include file="tpl/parts/common_header.tpl" title="statistical" refresh="false"}
+{include file="{$TPL}parts/common_header.tpl" title="statistical" refresh="false"}
 <div class="layoutMainContent">
 	<h1>統計データ</h1>
 	<p>各種統計データを参照可能とする
@@ -10,4 +10,4 @@
 	<dd></dd><dl>
 	</dl>
 </div>
-{include file="tpl/parts/common_footer.tpl"}
+{include file="{$TPL}parts/common_footer.tpl"}

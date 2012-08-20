@@ -1,9 +1,11 @@
 {include file="{$TPL}parts/common_header.tpl" title="Patient List" refresh="false"}
 <div class="layoutMainContent">
 	<center>
-		患者データ一覧<P />
-		<form action="{$URL}pages/patient_top.php" method="POST">
+		推奨接種期間設定<P />
+		<form action="{$URL}pages/clinic/term_setting.php" method="POST">
 			{$table}
+			<input type="submit" name="update" value="更新" />
+			<input type="submit" name="reset" value="初期化" />
 		</form>
 	</center>
 </div>

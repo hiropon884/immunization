@@ -1,6 +1,6 @@
 <?php
 
-require_once("class/MySmarty.class.php");
+require_once("../class/MySmarty.class.php");
 
 $smarty = new MySmarty(true);
 $smarty->assign("menu_is_available", "true");
@@ -45,5 +45,5 @@ if ($ret == FAILURE) {
 }
 $smarty->assign("person_state", $msg);
 
-$smarty->display("tpl/patient_top.tpl");
+$smarty->display(TPL_BASE."patient_top.tpl");
 ?>

@@ -3,8 +3,8 @@
 		<tr>
 			<td class="layoutLogo">
 				<div class="layoutLogo">
-					<a href="http://localhost/immunization/index.php">
-						<img class="naviLogo" src="img/header_logo.png" alt="logo">
+					<a href="{$URL}index.php">
+						<img class="naviLogo" src="{$IMG}header_logo.png" alt="logo">
 					</a>
 				</div>
 			</td>
@@ -20,5 +20,5 @@
 		</tr>
 	</table>
 
-	{include file="tpl/parts/topic_path.tpl"}
+	{include file="{$TPL}parts/topic_path.tpl"}
 </div>

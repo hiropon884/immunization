@@ -23,7 +23,7 @@ $msg = "";
 if (isset($_POST["login"])) {
 	try {
 		$db = $smarty->getDb();
-		$ret = $db->verifyUserAccount($clinic_id, $passwd);
+		$ret = $db->verifyClinicIDwithPW($clinic_id, $passwd);
 	} catch (PDOException $e) {
 		echo $e->getMessage();
 		die;
@@ -45,5 +45,5 @@ $smarty->assign("state", $msg);
 
 //print 'session_id=' . session_id() . '<P>';
 
-$smarty->display("tpl/login.tpl");
+$smarty->display(TPL_BASE."login.tpl");
 ?>

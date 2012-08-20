@@ -1,9 +1,9 @@
-{include file="tpl/parts/common_header.tpl" title="Clinic Registration" refresh="false"}
+{include file="{$TPL}parts/common_header.tpl" title="Clinic Registration" refresh="false"}
 <div class="layoutMainContent">
 	<center>
 		病院データ管理<P />
 		{$msg}
-		<form action="registration.php" method="POST">
+		<form action="{$URL}admin/registration.php" method="POST">
 			{$table}
 			{if $verify == "false"}
 				<input type="radio" name="cmd" value="none" checked="checked">None
@@ -29,4 +29,4 @@
 		</form>
 	</center>
 </div>
-{include file="tpl/parts/common_footer.tpl"}
+{include file="{$TPL}parts/common_footer.tpl"}

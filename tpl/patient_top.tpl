@@ -1,4 +1,4 @@
-{include file="tpl/parts/common_header.tpl" title="Patient Top" refresh="false"}
+{include file="{$TPL}parts/common_header.tpl" title="Patient Top" refresh="false"}
 <div class="layoutMainContent">
 	{if $person_state == "NG"}
 		<font color="red">システムエラー:</font>
@@ -18,4 +18,4 @@
 		</dl>
 	{/if}
 </div>
-{include file="tpl/parts/common_footer.tpl"}
+{include file="{$TPL}parts/common_footer.tpl"}

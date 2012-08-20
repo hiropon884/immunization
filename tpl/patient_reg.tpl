@@ -1,14 +1,14 @@
-{include file="tpl/parts/common_header.tpl" title="Patient Registration" refresh="false"}
+{include file="{$TPL}parts/common_header.tpl" title="Patient Registration" refresh="false"}
 <div class="layoutMainContent">
     <center>
         患者データ管理<P />
         {$msg}
         {if $cmd == "search"}
-            <form action="patient_top.php" method="POST">
+            <form action="{$URL}pages/patient_top.php" method="POST">
                 {$search}
             </form>
         {/if}
-        <form action="patient_reg.php" method="POST">
+        <form action="{$URL}pages/clinic/patient_reg.php" method="POST">
             {$table}
             {if $verify == "false"}
                 <input type="radio" name="cmd" value="none" checked="checked">None
@@ -35,4 +35,4 @@
         </form>
     </center>
 </div>
-{include file="tpl/parts/common_footer.tpl"}
+{include file="{$TPL}parts/common_footer.tpl"}

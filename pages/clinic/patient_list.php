@@ -1,6 +1,6 @@
 <?php
 
-require_once("class/MySmarty.class.php");
+require_once("../../class/MySmarty.class.php");
 
 $smarty = new MySmarty(true);
 $smarty->assign("menu_is_available", "true");
@@ -10,7 +10,7 @@ $smarty->assign("location", "patient_list");
 session_start();
 $smarty->session_check();
 
-$params = $smarty->getPatientParams();
+$params['patient'] = $smarty->getPatientParams();
 
 $patient_caption = $params['patient']['caption'];
 
@@ -66,5 +66,5 @@ $table->setRowAttributes(0, $hrAttrs, true);
 $table->setColAttributes(0, $hrAttrs);
 
 $smarty->assign("table", $table->toHtml());
-$smarty->display("tpl/patient_list.tpl");
+$smarty->display(TPL_BASE."patient_list.tpl");
 ?>

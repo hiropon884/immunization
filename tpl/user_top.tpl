@@ -1,4 +1,4 @@
-{include file="tpl/parts/common_header.tpl" title="User Top" refresh="false"}
+{include file="{$TPL}parts/common_header.tpl" title="User Top" refresh="false"}
 <div class="layoutMainContent">
 	<h1>データ操作</h1>
 	<p>各種データの操作を行う
@@ -16,4 +16,4 @@
 	<dl>
 	</dl>
 </div>
-{include file="tpl/parts/common_footer.tpl"}
+{include file="{$TPL}parts/common_footer.tpl"}
