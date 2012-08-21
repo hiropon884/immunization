@@ -166,6 +166,8 @@ $hrAttrs = array('bgcolor' => 'silver');
 $table->setRowAttributes(0, $hrAttrs, true);
 //echo $table->toHtml();
 $smarty->assign("table", $table->toHtml());
+
+$smarty->display(TPL_BASE."patient_calendar.tpl");
 ///echo "</form>";
 /*
   ksort($res);

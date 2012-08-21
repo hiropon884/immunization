@@ -1,5 +1,3 @@
-
-
 <?php
 require_once("../../class/MySmarty.class.php");
 
@@ -26,7 +24,7 @@ $clinic_id = $_SESSION["clinic_id"];
 $person_id = $_SESSION["person_id"];
 $birthday = $_SESSION["birthday"];
 $person_name = $_SESSION["person_name"];
-$params = $_POST["medicine_params"];
+//$params = $_POST["medicine_params"];
 //echo "params = " . $params . "<BR>";
 //echo "clinic_id = " . $clinic_id . "<BR>";
 //echo "person_id = " . $person_id . "<BR>";
@@ -34,12 +32,12 @@ $params = $_POST["medicine_params"];
 //echo "birthday = " . $birthday . "<P>";
 
 $params['book'] = $smarty->getBookParams();
-$book_attrs = $params['attribute'];
-$book_caption = $params['caption'];
-$book_vars_min = $params['vars_min'];
-$book_vars_max = $params['vars_max'];
+$book_attrs = $params['book']['attribute'];
+$book_caption = $params['book']['caption'];
+$book_vars_min = $params['book']['vars_min'];
+$book_vars_max = $params['book']['vars_max'];
 $params['$medicine'] = $smarty->getMedicineName();
-$medicine = $params['$medicine'];
+$medicine = $params['$medicine']['caption'];
 $book_vars = array();
 $table_error = array();
 $verify = false;
@@ -52,26 +50,18 @@ for ($cnt = 1; $cnt < count($book_attrs); $cnt++) {
     if (isset($_POST[$book_attrs[$cnt]])) {
         $book_vars[$cnt] = $_POST[$book_attrs[$cnt]];
         //echo $book_vars[$cnt]."<BR>";
-    }
+    } else {
+		$book_vars[$cnt] = "";
+	}
 }
 
-if (isset($_POST["medicine_params"])) {
-    $tmp_vars = explode("_", $_POST["medicine_params"]);
-    $book_vars[1] = $tmp_vars[0];
-    $book_vars[2] = $tmp_vars[1];
-}
-if (isset($_POST["book_params"])) {
-    $tmp_vars = explode("_", $_POST["book_params"]);
-    $book_vars[1] = $tmp_vars[0];
-    $book_vars[2] = $tmp_vars[1];
-    $book_vars[3] = $tmp_vars[2];
-    $book_vars[4] = $tmp_vars[3];
-}
+
 
 $cmd = "";
 if (isset($_POST["cmd"])) {
     //echo $_POST["cmd"]."<P>";
     $cmd = $_POST["cmd"];
+	
 } else {
     $cmd = "none";
 }
@@ -89,32 +79,27 @@ if (isset($_POST["submit"])) {
     }
 }
 
+if (isset($_POST["medicine_params"])) {
+    $tmp_vars = explode("_", $_POST["medicine_params"]);
+    $book_vars[1] = $tmp_vars[0];
+    $book_vars[2] = $tmp_vars[1];
+}
+if (isset($_POST["book_params"])) {
+    $tmp_vars = explode("_", $_POST["book_params"]);
+    $book_vars[1] = $tmp_vars[0];
+    $book_vars[2] = $tmp_vars[1];
+    $book_vars[3] = $tmp_vars[2];
+    $book_vars[4] = $tmp_vars[3];
+}
+
 $book_vars[0] = $person_id;
+
 if ($posted_type == "submit" || $posted_type == "verify") {
-    /*
-      //SQLサーバーへ接続
-      //$link = mysql_connect('localhost', 'root', 'admin');
-      $link = mysql_connect('localhost', 'db_user', '123456');
-      if (!$link) {
-      die('接続失敗です。'.mysql_error());
-      }
-      print('<p>接続に成功しました。</p>');
-
-      // MySQLに対する処理
-      //// テーブルへ接続
-      $db_selected = mysql_select_db('immunization', $link);
-      if (!$db_selected){
-      die('データベース選択失敗です。'.mysql_error());
-      }
-      print('<p>immunization データベースを選択しました。</p>');
-
-      //// 文字コード設定
-      mysql_set_charset('utf8');
-     */
+   
     //// 新規予約の追加
     if ($cmd == "add") {
         if ($posted_type == "verify") {
-            $table_error = checkInput($book_vars, $book_vars_min, $book_vars_max, $table_error, $function_name);
+            $table_error = $smarty->checkInput($book_vars, $book_vars_min, $book_vars_max, $table_error, $function_name);
             $verify = true;
             for ($cnt = 0; $cnt < count($table_error); $cnt++) {
                 if ($table_error[$cnt] == "over_flow" || $table_error[$cnt] == "under_flow") {
@@ -132,24 +117,8 @@ if ($posted_type == "submit" || $posted_type == "verify") {
                 $msg .= "以下の内容で登録します。内容が合っているか今一度確認してください。";
             }
         } else if ($posted_type == "submit") {
-            /*
-              $verify = true;
-              $str = "INSERT INTO book VALUES (";
-              $last_item = count($book_attrs) -1;
-              for ($cnt = 0; $cnt < count($book_attrs); $cnt++) {
-              $quote = "'";
-              $str .= $quote . $book_vars[$cnt] . $quote;
-              if($cnt == $last_item){
-              $str .= ");";
-              } else {
-              $str .= ", ";
-              }
-              }
-              //$str = "INSERT INTO clinic VALUES (null, '" . $passwd . "','" . $name . "','" . $yomi . "','" . $email . "','" . $zipcode . "','" . $location1 . "','" . $location2 . "','" . $tel . "');";
-              //print $str."<P>";
-              $result = mysql_query($str);
-             * 
-             */
+			$verify = true;
+            
             $ret = $db->insertBookData($book_vars);
             if ($ret) {
                 $msg .= "<font color=\"red\">Success</font>: データを登録しました。<P>";
@@ -163,7 +132,7 @@ if ($posted_type == "submit" || $posted_type == "verify") {
     } else if ($cmd == "update") { // 既存ユーザーのデータ更新
         if ($posted_type == "verify") {
             if ($db->verifyBookData($book_vars, "update") == SUCCESS) {
-                $table_error = checkInput($book_vars, $book_vars_min, $book_vars_max, $table_error, $function_name);
+                $table_error = $smarty->checkInput($book_vars, $book_vars_min, $book_vars_max, $table_error, $function_name);
                 $verify = true;
                 for ($cnt = 0; $cnt < count($table_error); $cnt++) {
                     if ($table_error[$cnt] == "over_flow" || $table_error[$cnt] == "under_flow") {
@@ -181,37 +150,7 @@ if ($posted_type == "submit" || $posted_type == "verify") {
             }
         } else if ($posted_type == "submit") {
             $verify = true;
-            /*
-            $str = "UPDATE book SET ";
-            $last_item = count($book_attrs) - 1;
-            for ($cnt = 0; $cnt < count($book_attrs); $cnt++) {
-                $quote = "'";
-                $str .= $book_attrs[$cnt] . "=" . $quote . $book_vars[$cnt] . $quote;
-
-                if ($cnt == $last_item) {
-                    $str .= "";
-                } else {
-                    $str .= ", ";
-                }
-            }
-            //$str .= " WHERE ";// . $book_attrs[0] . "=" . $book_vars[0] . ";";
-            $str .= " WHERE " . getVerifyStr($book_vars, $book_attrs);
-             * 
-             */
-            /*
-              $limit = 3;
-              $last_item = $limit - 1;
-              for ($cnt = 0; $cnt < $limit; $cnt++) {
-              $str .= $book_attrs[$cnt] . " = '" . $book_vars[$cnt];
-              if($cnt < $last_item){
-              $str .= "' AND ";
-              } else {
-              $str .= ";";
-              }
-              } */
-            //$str = "UPDATE clinic SET passwd='" . $passwd . "', name='" . $name . "', yomi='" . $yomi . "', email='" . $email . "', zipcode='" . $zipcode . "', location1='" . $location1 . "', location2='" . $location2 . "', tel='" . $tel . "' WHERE clinic_id=" . $clinic_id . ";";
-            //print $str . "<P>";
-            //$result = mysql_query($str);
+           
             $ret = $db->updateBookData($book_vars);
             if ($ret) {
                 $msg .= "<font color=\"red\">Success</font>: 以下のデータ更新しました。<P>";
@@ -230,7 +169,6 @@ if ($posted_type == "submit" || $posted_type == "verify") {
                 $msg .= "<font color=\"red\">ERROR: 指定されたIDをもつユーザーがいませんでした。</font>";
                 $verify = false;
             }
-            //print_r($table_error);
             if ($verify == true) {
                 $msg .= "以下のデータを削除します。本当に削除しても良いか今一度確認してください。";
                 $book_vars = $db->getBookData($book_vars);
@@ -238,91 +176,16 @@ if ($posted_type == "submit" || $posted_type == "verify") {
         }
         if ($posted_type == "submit") {
             $verify = true;
-            
-            //$str = "DELETE FROM book WHERE ";
-            //$str .= getVerifyStr($book_vars, $book_attrs);
-            /*
-              $limit = 3;
-              $last_item = $limit - 1;
-              for ($cnt = 0; $cnt < $limit; $cnt++) {
-              $str .= $book_attrs[$cnt] . " = '" . $book_vars[$cnt];
-              if($cnt < $last_item){
-              $str .= "' AND ";
-              } else {
-              $str .= ";";
-              }
-              } */
-            //$str = "DELETE FROM book WHERE " . $book_attrs[0] . " = '" . $clinic_vars[0] . "' AND "  . $clinic_attribute[1] . " = '" . $clinic_vars[1] . "'";
-            //$result = mysql_query($str);
-            //$result = mysql_query("DELETE FROM clinic WHERE clinic_id = '$clinic_id' AND passwd = '$passwd'");
+
             $ret = $db->deleteBookData($book_vars);
             if ($ret) {
                 $msg .=  "<font color=\"red\">Success</font>: 以下のデータを削除しました。<P>";
-                //die('クエリーが失敗しました。'.mysql_error());
-                //print "クエリーが失敗しました。" . mysql_error() . "<P>";
             } else {
                 $msg .= "クエリーが失敗しました。" . mysql_error() . "<P>";
-                //print "<font color=\"red\">Success</font>: 以下のデータを削除しました。<P>";
             }
         }
     }
-    /*
-      else if($cmd == "get"){
-      if ($posted_type == "verify") {
-      if(userIdVerify($clinic_vars[0])){
-      if(passwordVerify($clinic_vars[0], $clinic_vars[1])){
-      $verify = true;
-      } else {
-      //print "<font color=\"red\">ERROR: パスワードが一致しません。</font>";
-      $verify = false;
-      }
-      } else {
-      print "<font color=\"red\">ERROR: 指定されたIDをもつユーザーがいませんでした。</font>";
-      $verify = false;
-      }
-      //print_r($table_error);
-      if($verify == true){
-      print "以下のデータを取得しました。";
-      $clinic_vars = getClinicData($clinic_vars[0], $clinic_vars[1], $clinic_attribute);
-
-      }
-      }
-      } */
-    /*
-      //// 表の中身をダンプする
-      //$str = "SELECT * FROM user WHERE clinic_id = '$clinic_id' AND passwd = '$passwd'";
-      //print $str."<P>";
-      $result = mysql_query("SELECT * FROM clinic");
-      if (!$result) {
-      die('クエリーが失敗しました。'.mysql_error());
-      } else {
-      ////// 結果の行数を得る
-      $num_rows = mysql_num_rows($result);
-      echo 'total user numbera = ' . $num_rows . '<p>';
-
-      while ($row = mysql_fetch_assoc($result)) {
-      print('<p>');
-      print('clinic_id='.$row['clinic_id']);
-      print(',password='.$row['passwd']);
-      print(',name='.$row['name']);
-      print(',yomi='.$row['yomi']);
-      print(',email='.$row['email']);
-      print(',zipcode='.$row['zipcode']);
-      print(',location1='.$row['location1']);
-      print(',location2='.$row['location2']);
-      print(',tel='.$row['tel']);
-      print('</p>');
-      }
-      }
-     */
-    // サーバー切断
-    /*
-    $close_flag = mysql_close($link);
-
-    if ($close_flag) {
-        print('<p>切断に成功しました。</p>');
-    }*/
-    //}
+  
 }
 
 $attrs = array('width' => '600');
@@ -418,25 +281,33 @@ if ($cmd != "none") {
 //echo "<form id=\"formid\" action=\"appointment.php\" method=\"POST\">";
 //echo $table->toHtml();
 //echo "<P>";
+$none_check = "";
+$add_check = "";
+$update_check = "";
+$delete_check = "";
 if ($verify == false) {
-    if (isset($_POST["medicine_params"])) {
-        $none_check = "";
+    if (isset($_POST["medicine_params"]) || $cmd == "add") {
+        //$none_check = "";
         $add_check = "checked=\"checked\"";
-        $update_check = "";
-    } else if (isset($_POST["book_params"])) {
-        $none_check = "";
-        $add_check = "";
+        //$update_check = "";
+    } else if (isset($_POST["book_params"]) || $cmd == "update") {
+        //$none_check = "";
+        //$add_check = "";
         $update_check = "checked=\"checked\"";
+	} else if ( $cmd == "delete") {
+		$delete_check = "checked=\"checked\"";
     } else {
         $none_check = "checked=\"checked\"";
-        $add_check = "";
-        $update_check = "";
+        //$add_check = "";
+        //$update_check = "";
     }
     $check = array();
     $check['none'] = $none_check;
-    $check['add'] = $none_check;
-    $check['update'] = $none_check;
+    $check['add'] = $add_check;
+    $check['update'] = $update_check;
+	$check['delete'] = $delete_check;
     $smarty->assign("check", $check);
+	//print_r($check);
 /*
     //echo "<input type=\"radio\" name=\"cmd\" value=\"none\" " . $none_check . ">None";
     //echo "<input type=\"radio\" name=\"cmd\" value=\"add\" " . $add_check . " >新規登録";

@@ -450,7 +450,7 @@ SQL;
         $sql = <<<SQL
 SELECT immunization_id, frequency 
 FROM immunization
-order by getImmunizationIDList
+order by immunization_id
 SQL;
 
         $sth = $this->prepare($sql);
@@ -518,14 +518,16 @@ SQL;
         $this->bindValueWithType($sth, ':number', $input[2]);
         $rows = $this->prepared_query($sth);
 
-        if ($this->rowCount() == SUCCESS) {
+        if ($this->rowCount() >= SUCCESS) {
             //登録済み
             $ret = SUCCESS;
+			//echo "aaaa";
         } elseif ($this->rowCount() == FAILURE) {
             //未登録認証失敗
             $ret = FAILURE;
+			//echo "bbbb";
         }
-
+/*
         //新規追加の場合,判別結果を反転する
         if ($type == "new") {
             if ($ret == SUCCESS) {
@@ -533,7 +535,7 @@ SQL;
             } else {
                 $ret = SUCCESS;
             }
-        }
+        }*/
 
         return $ret;
     }
@@ -603,7 +605,7 @@ SQL;
         $this->bindValueWithType($sth, ':number', $input[2]);
         $rows = $this->prepared_query($sth);
 
-        return $rows;
+        return $rows[0];
     }
 
     /*
@@ -632,8 +634,8 @@ SQL;
 
     public function getBookInfo($id, $state) {
         $sql = <<<SQL
-SELECT body.immunization_id, body.immunization_name, 
-       book.day, book.number as times, book.lot_num 
+SELECT body.immunization_id, book.day, body.immunization_name, 
+       book.number as times, book.lot_num 
 FROM immunization as body 
 INNER JOIN book 
 ON book.immunization_id = body.immunization_id 
