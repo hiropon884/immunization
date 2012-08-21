@@ -30,7 +30,7 @@
 			<div class="naviVerticalNavi_2"><img class="naviVerticalNavi_2" src="{$IMG}verticalnavi_1.gif" />
 				<a class="naviVerticalNavi" href="{$URL}pages/patient/patient_booklist.php">予約一覧表示</a></div>
 			<div class="naviVerticalNavi_2"><img class="naviVerticalNavi_2" src="{$IMG}verticalnavi_1.gif" />
-				<a class="naviVerticalNavi" href="{$URL}pages/patient/patient_past.php">接種履歴詳細</a></div>
+				<a class="naviVerticalNavi" href="{$URL}pages/patient/patient_history.php">接種履歴詳細</a></div>
 
 		{/if}
 		<div class="naviVerticalNavi_1"><img class="naviVerticalNavi_1" src="{$IMG}verticalnavi_1.gif" /><a href="{$URL}logout.php">ログアウト</a></div>

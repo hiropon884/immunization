@@ -9,6 +9,7 @@ session_start();
 $smarty->assign("menu_is_available", "true");
 $smarty->assign("mode", "admin");
 $smarty->assign("location", "registration");
+$function_name = "registration";
 
 $db = $smarty->getDb();
 $params['clinic'] = $smarty->getClinicParams();
@@ -68,7 +69,7 @@ if ($posted_type == "submit" || $posted_type == "verify") {
 	//// 新規ユーザーの追加
 	if ($cmd == "add") {
 		if ($posted_type == "verify") {
-			$table_error = checkInput($clinic_vars, $clinic_vars_min, $clinic_vars_max, $table_error);
+			$table_error = checkInput($clinic_vars, $clinic_vars_min, $clinic_vars_max, $table_error, $function_name);
 			$verify = true;
 			for ($cnt = 0; $cnt < count($table_error); $cnt++) {
 				if ($table_error[$cnt] == "over_flow" || $table_error[$cnt] == "under_flow") {
@@ -127,7 +128,7 @@ if ($posted_type == "submit" || $posted_type == "verify") {
 			if ($db->verifyClinicID($clinic_vars[0]) == SUCCESS) {
 				if ($db->verifyClinicIDwithPW($clinic_vars[0], $clinic_vars[1]) == SUCCESS) {
 
-					$table_error = checkInput($clinic_vars, $clinic_vars_min, $clinic_vars_max, $table_error);
+					$table_error = checkInput($clinic_vars, $clinic_vars_min, $clinic_vars_max, $table_error, $function_name);
 					$verify = true;
 					for ($cnt = 0; $cnt < count($table_error); $cnt++) {
 						if ($table_error[$cnt] == "over_flow" || $table_error[$cnt] == "under_flow") {
@@ -282,7 +283,7 @@ $smarty->assign("msg",$msg);
 //echo $table->toHtml();
 
 $smarty->display(TPL_BASE."registration.tpl");
-
+/*
 function checkInput($vars, $min, $max, $err) {
 	for ($cnt = 1; $cnt < count($vars); $cnt++) {
 		if ($min[$cnt] > mb_strlen($vars[$cnt])) {
@@ -294,6 +295,6 @@ function checkInput($vars, $min, $max, $err) {
 		}
 	}
 	return $err;
-}
+}*/
 
 ?>

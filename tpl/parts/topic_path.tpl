@@ -27,13 +27,13 @@
 	{else if $mode == "patient"}
 		<img class="naviYouAreHere" src="{$IMG}youarehere.gif" alt="&#062;" />
 		<span class="naviYouAreHere"><a class="naviYouAreHere" href="{$URL}pages/patient_top.php">個人メニュー</a></span>
-		{if $location == "patient_reg"}	
+		{if $location == "appointment"}	
 			<img class="naviYouAreHere" src="{$IMG}youarehere.gif" alt="&#062;" /><span class="naviYouAreHere">個別予防接種予約</span>
-		{else if $location =="patient_list"}
+		{else if $location =="calendar"}
 			<img class="naviYouAreHere" src="{$IMG}youarehere.gif" alt="&#062;" /><span class="naviYouAreHere">予防接種カレンダー</span>
-		{else if $location =="statistical"}
+		{else if $location =="book_list"}
 			<img class="naviYouAreHere" src="{$IMG}youarehere.gif" alt="&#062;" /><span class="naviYouAreHere">予約一覧表示</span>
-		{else if $location =="setting"}
+		{else if $location =="done"}
 			<img class="naviYouAreHere" src="{$IMG}youarehere.gif" alt="&#062;" /><span class="naviYouAreHere">接種履歴詳細</span>
 		{/if}
 	{/if}
