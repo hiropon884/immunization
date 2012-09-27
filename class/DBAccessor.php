@@ -400,7 +400,7 @@ SELECT *
 FROM person
 {$where}
 SQL;
-
+		echo $sql;
         $sth = $this->prepare($sql);
         for ($cnt = 0; $cnt < count($attr); $cnt++) {
             if ($var[$cnt] != "") {

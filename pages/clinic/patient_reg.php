@@ -124,7 +124,7 @@ if ($posted_type == "submit" || $posted_type == "verify") {
 	//// 新規ユーザーの追加
 	if ($cmd == "add") {
 		if ($posted_type == "verify") {
-			$table_error = checkInput($patient_vars, $patient_vars_min, $patient_vars_max, $table_error, $function_name);
+			$table_error = $smarty->checkInput($patient_vars, $patient_vars_min, $patient_vars_max, $table_error, $function_name);
 			$verify = true;
 			for ($cnt = 0; $cnt < count($table_error); $cnt++) {
 				if ($table_error[$cnt] == "over_flow" || $table_error[$cnt] == "under_flow") {
@@ -176,7 +176,7 @@ if ($posted_type == "submit" || $posted_type == "verify") {
 			// if (userIdVerify($patient_vars[0])) {
 			//    if (passwordVerify($patient_vars[0], $patient_vars[1])) {
 			if ($db->verifyPatientID($patient_vars) == SUCCESS) {
-				$table_error = checkInput($patient_vars, $patient_vars_min, $patient_vars_max, $table_error, $function_name);
+				$table_error = $smarty->checkInput($patient_vars, $patient_vars_min, $patient_vars_max, $table_error, $function_name);
 				$verify = true;
 				for ($cnt = 0; $cnt < count($table_error); $cnt++) {
 					if ($table_error[$cnt] == "over_flow" || $table_error[$cnt] == "under_flow") {
