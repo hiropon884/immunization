@@ -14,7 +14,7 @@
 		{/if}
 	{else if $mode == "clinic"}
 		<img class="naviYouAreHere" src="{$IMG}youarehere.gif" alt="&#062;" />
-		<span class="naviYouAreHere"><a class="naviYouAreHere" href="{$URL}pages/user_top.php">メニュー</a></span>
+		<span class="naviYouAreHere"><a class="naviYouAreHere" href="{$URL}pages/user_top.php">病院メニュー</a></span>
 		{if $location == "patient_reg"}	
 			<img class="naviYouAreHere" src="{$IMG}youarehere.gif" alt="&#062;" /><span class="naviYouAreHere">患者データ管理</span>
 		{else if $location =="patient_list"}
@@ -25,6 +25,8 @@
 			<img class="naviYouAreHere" src="{$IMG}youarehere.gif" alt="&#062;" /><span class="naviYouAreHere">接種時期設定</span>
 		{/if}
 	{else if $mode == "patient"}
+		<img class="naviYouAreHere" src="{$IMG}youarehere.gif" alt="&#062;" />
+		<span class="naviYouAreHere"><a class="naviYouAreHere" href="{$URL}pages/user_top.php">病院メニュー</a></span>
 		<img class="naviYouAreHere" src="{$IMG}youarehere.gif" alt="&#062;" />
 		<span class="naviYouAreHere"><a class="naviYouAreHere" href="{$URL}pages/patient_top.php">個人メニュー</a></span>
 		{if $location == "appointment"}	
